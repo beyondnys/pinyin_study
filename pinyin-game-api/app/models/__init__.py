@@ -1,0 +1,24 @@
+"""导出所有 ORM 模型，便于 Alembic 与建表。"""
+
+from __future__ import annotations
+from app.models.user import User
+from app.models.word_library import WordLibrary
+from app.models.practice_book import PracticeBook
+from app.models.practice_question import PracticeQuestion
+from app.models.practice_record import PracticeRecord
+from app.models.practice_answer_detail import PracticeAnswerDetail
+from app.models.wrong_question import WrongQuestion
+from app.models.user_item_mastery import UserItemMastery
+from app.models.import_task import ImportTask
+
+__all__ = [
+    "User",
+    "WordLibrary",
+    "PracticeBook",
+    "PracticeQuestion",
+    "PracticeRecord",
+    "PracticeAnswerDetail",
+    "WrongQuestion",
+    "UserItemMastery",
+    "ImportTask",
+]
