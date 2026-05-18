@@ -14,6 +14,7 @@ from app.models.user import User
 from app.models.word_library import WordLibrary
 from app.services.pinyin_service import hanzi_to_pinyin
 from app.utils.password_util import hash_password
+from app.utils.pinyin_util import apply_pinyin_fields
 
 # 与参考图类似的常用字
 DEMO_HANZI = ["山", "水", "田", "风", "云", "花", "雨", "禾", "石", "对"]
@@ -37,12 +38,19 @@ def main():
 
         for hz in DEMO_HANZI:
             word = db.query(WordLibrary).filter(WordLibrary.hanzi == hz, WordLibrary.is_deleted == 0).first()
-            py, plain = hanzi_to_pinyin(hz)
+            py_result = hanzi_to_pinyin(hz)
             if not word:
-                db.add(WordLibrary(hanzi=hz, pinyin=py, pinyin_plain=plain, remark="演示"))
+                word = WordLibrary(
+                    hanzi=hz,
+                    pinyin="",
+                    pinyin_list="[]",
+                    pinyin_plain="",
+                    remark="演示",
+                )
+                apply_pinyin_fields(word, py_result)
+                db.add(word)
             else:
-                word.pinyin = py
-                word.pinyin_plain = plain
+                apply_pinyin_fields(word, py_result)
 
         book = db.query(PracticeBook).filter(PracticeBook.title == BOOK_TITLE, PracticeBook.is_deleted == 0).first()
         if not book:
@@ -65,15 +73,16 @@ def main():
         for hz in DEMO_HANZI:
             if hz in existing:
                 continue
-            py, _ = hanzi_to_pinyin(hz)
-            db.add(
-                PracticeQuestion(
-                    book_id=book.id,
-                    hanzi=hz,
-                    pinyin=py,
-                    sort_order=sort_order,
-                )
+            py_result = hanzi_to_pinyin(hz)
+            q = PracticeQuestion(
+                book_id=book.id,
+                hanzi=hz,
+                pinyin="",
+                pinyin_list="[]",
+                sort_order=sort_order,
             )
+            apply_pinyin_fields(q, py_result)
+            db.add(q)
             sort_order += 1
 
         book.question_count = (

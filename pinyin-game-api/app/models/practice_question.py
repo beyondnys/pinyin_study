@@ -28,7 +28,13 @@ class PracticeQuestion(Base, AuditMixin):
     pinyin: Mapped[str] = mapped_column(
         String(64),
         nullable=False,
-        comment="题目标准拼音，带声调",
+        comment="题目主读音（声调符号）",
+    )
+    pinyin_list: Mapped[str] = mapped_column(
+        String(512),
+        default="[]",
+        nullable=False,
+        comment="题目全部合法读音 JSON，多音字判题用",
     )
     sort_order: Mapped[int] = mapped_column(
         Integer,

@@ -24,6 +24,7 @@ class QuestionOut(BaseModel):
     book_id: int
     hanzi: str
     pinyin: str
+    pinyin_list: List[str] = []
     sort_order: int
 
     class Config:

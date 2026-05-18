@@ -29,7 +29,8 @@ defineEmits<{ 'card-click': [card: CardType] }>()
   display: grid;
   /* minmax(0,1fr) 防止长拼音撑破列宽 */
   grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
-  gap: clamp(6px, 1.8vw, 12px);
+  /* 手机 4 列时缩小间距，多留格子宽度 */
+  gap: clamp(4px, 1.2vw, 10px);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;

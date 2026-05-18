@@ -8,6 +8,7 @@ export default defineConfig({
     alias: { '@': resolve(__dirname, 'src') },
   },
   server: {
+    host: true, // 监听 0.0.0.0，支持手机等同局域网设备访问
     port: 5173,
     proxy: {
       '/api': {

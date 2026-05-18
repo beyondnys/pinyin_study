@@ -51,6 +51,8 @@ python -m app.scripts.seed_demo_data
 
 已有数据库需执行掌握度表迁移：`mysql ... pinyin_game < sql/init_learning.sql`（详见 [docs/learning_mastery.md](docs/learning_mastery.md)）。
 
+拼音由数字调改为声调符号（如 zhōng）及多音字列表：`sql/migrate_pinyin_tone.sql` + `python -m app.scripts.migrate_pinyin_to_tone`（详见 [docs/pinyin_tone.md](docs/pinyin_tone.md)）。
+
 ### 3. 前台学习端
 
 ```bash

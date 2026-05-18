@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 
 class WordCreate(BaseModel):
@@ -21,6 +21,7 @@ class WordOut(BaseModel):
     id: int
     hanzi: str
     pinyin: str
+    pinyin_list: List[str] = []
     pinyin_plain: str
     remark: str
 

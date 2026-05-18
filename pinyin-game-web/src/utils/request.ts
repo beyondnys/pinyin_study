@@ -3,9 +3,15 @@ import { ElMessage } from 'element-plus'
 import router from '@/router'
 import { clearAuth, getToken } from './storage'
 
+/**
+ * API 根地址：开发用 /api（Vite 代理），生产见 .env.production
+ * 可通过 .env.local 覆盖，如 VITE_API_BASE_URL=https://your-domain/api
+ */
+const apiBaseURL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+
 /** Axios 实例：自动携带 Token，401 跳转登录 */
 const request = axios.create({
-  baseURL: '/api',
+  baseURL: apiBaseURL,
   timeout: 30000,
 })
 

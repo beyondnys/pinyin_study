@@ -11,6 +11,7 @@ from app.models.practice_book import PracticeBook
 from app.models.practice_question import PracticeQuestion
 from app.models.word_library import WordLibrary
 from app.services.pinyin_service import extract_unique_hanzi, hanzi_to_pinyin
+from app.utils.pinyin_util import apply_pinyin_fields
 from app.utils.datetime_util import utc_now
 
 
@@ -49,7 +50,7 @@ def process_import_task(
 
         sort_order = 0
         for hz in hanzi_list:
-            py_tone, py_plain = hanzi_to_pinyin(hz)
+            py_result = hanzi_to_pinyin(hz)
 
             # 字库 upsert
             word = (
@@ -60,24 +61,27 @@ def process_import_task(
             if not word:
                 word = WordLibrary(
                     hanzi=hz,
-                    pinyin=py_tone,
-                    pinyin_plain=py_plain,
+                    pinyin="",
+                    pinyin_list="[]",
+                    pinyin_plain="",
                     created_by=operator_id,
                     updated_by=operator_id,
                 )
+                apply_pinyin_fields(word, py_result)
                 db.add(word)
             elif not word.pinyin:
-                word.pinyin = py_tone
-                word.pinyin_plain = py_plain
+                apply_pinyin_fields(word, py_result)
 
             q = PracticeQuestion(
                 book_id=book.id,
                 hanzi=hz,
-                pinyin=py_tone,
+                pinyin="",
+                pinyin_list="[]",
                 sort_order=sort_order,
                 created_by=operator_id,
                 updated_by=operator_id,
             )
+            apply_pinyin_fields(q, py_result)
             db.add(q)
             sort_order += 1
 

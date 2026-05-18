@@ -28,15 +28,15 @@ defineEmits<{ click: [] }>()
   width: 100%;
   max-width: 100%;
   aspect-ratio: 1;
-  min-height: 44px;
+  min-height: 40px;
   min-width: 0;
-  border-radius: 12px;
+  border-radius: clamp(8px, 2vw, 12px);
   background: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   font-weight: 600;
-  padding: 4px;
+  padding: 2px;
   box-sizing: border-box;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   transition: box-shadow 0.12s, background 0.2s, border-color 0.12s;
   overflow: hidden;
 }
@@ -49,11 +49,11 @@ defineEmits<{ click: [] }>()
   line-height: 1.2;
 }
 .game-card.hanzi .card-text {
-  font-size: clamp(22px, 6vw, 32px);
+  font-size: 20px;
   color: #ff6b6b;
 }
 .game-card.pinyin .card-text {
-  font-size: clamp(14px, 3.8vw, 22px);
+  font-size: 16px;
   color: #4a90e2;
 }
 .game-card.selected {
@@ -64,7 +64,7 @@ defineEmits<{ click: [] }>()
 .game-card.success {
   border-color: #52c41a;
   background: #f6ffed;
-  box-shadow: 0 0 0 3px rgba(82, 196, 26, 0.35);
+  box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.35);
   animation: match-pop 0.38s ease-out;
 }
 .card-check {

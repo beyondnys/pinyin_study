@@ -3,7 +3,13 @@ import { ElMessage } from 'element-plus'
 import router from '@/router'
 import { clearAuth, getToken } from './storage'
 
-const request = axios.create({ baseURL: '/api', timeout: 30000 })
+/**
+ * API 根地址：开发用 /api（Vite 代理），生产见 .env.production
+ * 可通过 .env.local 覆盖
+ */
+const apiBaseURL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+
+const request = axios.create({ baseURL: apiBaseURL, timeout: 30000 })
 
 request.interceptors.request.use((config) => {
   const token = getToken()

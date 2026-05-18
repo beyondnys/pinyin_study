@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { fetchGame, type GameCard } from '@/api/books'
@@ -73,27 +73,14 @@ const liveAccuracy = computed(() => {
   return Math.round((matchedCount.value / t) * 100)
 })
 
-const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 390)
-
-/** 窄屏 3 列、宽屏 4 列，避免两侧被裁切 */
-const gridCols = computed(() => {
-  if (practiceStore.cards.length < 12) return 3
-  return viewportWidth.value < 400 ? 3 : 4
-})
-
-function onResize() {
-  viewportWidth.value = window.innerWidth
-}
+/** 8 题（16 张卡）固定 4 列；题量较少时用 3 列避免格子过宽 */
+const gridCols = computed(() => (practiceStore.cards.length >= 12 ? 4 : 3))
 
 onMounted(() => {
   preloadSounds()
-  window.addEventListener('resize', onResize)
   loadGame()
 })
 
-onUnmounted(() => {
-  window.removeEventListener('resize', onResize)
-})
 
 async function loadGame() {
   loading.value = true
@@ -237,12 +224,12 @@ function goResult() {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 4px 2px;
+  padding: 2px 0;
   flex: 1;
 }
 .game-header {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .game-header h2 {
   font-size: clamp(16px, 4vw, 20px);

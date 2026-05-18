@@ -17,6 +17,7 @@ from app.schemas.question import (
     QuestionUpdate,
 )
 from app.services.pinyin_service import hanzi_to_pinyin
+from app.utils.pinyin_util import apply_pinyin_fields, question_to_out_dict
 from app.services.question_import_service import batch_import_book_questions
 
 router = APIRouter(dependencies=[Depends(require_admin)])
@@ -85,7 +86,7 @@ def list_questions(book_id: int, db: Session = Depends(get_db)):
         .order_by(PracticeQuestion.sort_order, PracticeQuestion.id)
         .all()
     )
-    return success([QuestionOut.model_validate(q).model_dump() for q in items])
+    return success([question_to_out_dict(q) for q in items])
 
 
 @router.post("/{book_id}/questions/batch-import")
@@ -115,15 +116,17 @@ def create_question(
     b = db.query(PracticeBook).filter(PracticeBook.id == book_id, PracticeBook.is_deleted == 0).first()
     if not b:
         return fail(1, "练习册不存在")
-    py, _ = hanzi_to_pinyin(body.hanzi)
+    py_result = hanzi_to_pinyin(body.hanzi)
     q = PracticeQuestion(
         book_id=book_id,
         hanzi=body.hanzi,
-        pinyin=body.pinyin or py,
+        pinyin="",
+        pinyin_list="[]",
         sort_order=body.sort_order,
         created_by=admin["user_id"],
         updated_by=admin["user_id"],
     )
+    apply_pinyin_fields(q, py_result, manual_pinyin=body.pinyin)
     db.add(q)
     b.question_count = (
         db.query(PracticeQuestion)
@@ -133,7 +136,7 @@ def create_question(
     )
     db.commit()
     db.refresh(q)
-    return success(QuestionOut.model_validate(q).model_dump())
+    return success(question_to_out_dict(q))
 
 
 @router.put("/{book_id}/questions/{question_id}")
@@ -158,16 +161,14 @@ def update_question(
         return fail(1, "题目不存在")
     if body.hanzi is not None:
         q.hanzi = body.hanzi
-    if body.pinyin is not None:
-        q.pinyin = body.pinyin
-    elif body.hanzi is not None:
-        py, _ = hanzi_to_pinyin(q.hanzi)
-        q.pinyin = py
+    if body.hanzi is not None or body.pinyin is not None:
+        py_result = hanzi_to_pinyin(q.hanzi)
+        apply_pinyin_fields(q, py_result, manual_pinyin=body.pinyin)
     if body.sort_order is not None:
         q.sort_order = body.sort_order
     q.updated_by = admin["user_id"]
     db.commit()
-    return success(QuestionOut.model_validate(q).model_dump())
+    return success(question_to_out_dict(q))
 
 
 @router.delete("/{book_id}/questions/{question_id}")

@@ -52,3 +52,31 @@ python -m app.scripts.init_admin --reset   # 已存在时重置密码
 ### 演示数据
 
 - `python -m app.scripts.seed_demo_data` — 学生 student/student123 + 示例练习册
+
+### 拼音格式迁移（zhong1 → zhōng + 多音字）
+
+已有库从数字调升级为**声调符号**，并填充 `pinyin_list` 多音字列表：
+
+```bash
+mysql -u root -p pinyin_game < ../sql/migrate_pinyin_tone.sql
+python -m app.scripts.migrate_pinyin_to_tone --dry-run   # 预览
+python -m app.scripts.migrate_pinyin_to_tone             # 写入
+```
+
+新导入/字库生成均使用 `Style.TONE`；判题时 `user_pinyin` 命中主音或 `pinyin_list` 中任一读法均算正确。
+
+## Windows 发布打包
+
+在项目根目录双击或执行：
+
+```bat
+build.bat
+```
+
+会在 `dist` 目录生成 **`yyyyMMddHHmmss.zip` 压缩包**（不是解压后的文件夹；例如 `20250517143022.zip`），包含：
+
+- `app/`（不含 `__pycache__`）
+- `scripts/`
+- `requirements.txt`、`.env.example`、`README.md`
+
+不包含 `.env`、虚拟环境等敏感或本地文件。解压后按脚本末尾提示配置 `.env` 并安装依赖后启动。

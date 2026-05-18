@@ -17,6 +17,7 @@ from app.models.word_library import WordLibrary
 from app.learning import LearningMasteryService
 from app.schemas.practice import AnswerItem, GameCardOut, GameDataOut
 from app.services.wrong_question_service import upsert_wrong_questions
+from app.utils.pinyin_util import is_pinyin_match
 
 def get_book_or_404(db: Session, book_id: int) -> PracticeBook:
     """获取启用中的练习册。"""
@@ -107,14 +108,14 @@ def _resolve_answer(
         )
         if not q:
             return None
-        ok = ans.user_pinyin.strip().lower() == q.pinyin.strip().lower()
+        ok = is_pinyin_match(ans.user_pinyin, q.pinyin, q.pinyin_list)
         return q.hanzi, q.pinyin, q.id, ok
 
     if ans.question_id < 0:
         w = db.query(WordLibrary).filter(WordLibrary.id == -ans.question_id, WordLibrary.is_deleted == 0).first()
         if not w:
             return None
-        ok = ans.user_pinyin.strip().lower() == w.pinyin.strip().lower()
+        ok = is_pinyin_match(ans.user_pinyin, w.pinyin, w.pinyin_list)
         return w.hanzi, w.pinyin, ans.question_id, ok
     return None
 

@@ -8,6 +8,7 @@ from app.models.practice_book import PracticeBook
 from app.models.practice_question import PracticeQuestion
 from app.models.word_library import WordLibrary
 from app.services.pinyin_service import extract_unique_hanzi, hanzi_to_pinyin
+from app.utils.pinyin_util import apply_pinyin_fields
 
 
 def batch_import_book_questions(
@@ -60,28 +61,30 @@ def batch_import_book_questions(
     added_hanzi: list[str] = []
 
     for hz in to_add:
-        py_tone, py_plain = hanzi_to_pinyin(hz)
-        db.add(
-            PracticeQuestion(
-                book_id=book_id,
+        py_result = hanzi_to_pinyin(hz)
+        q = PracticeQuestion(
+            book_id=book_id,
+            hanzi=hz,
+            pinyin="",
+            pinyin_list="[]",
+            sort_order=sort_order,
+            created_by=operator_id,
+            updated_by=operator_id,
+        )
+        apply_pinyin_fields(q, py_result)
+        db.add(q)
+        if hz not in lib_hanzi:
+            word = WordLibrary(
                 hanzi=hz,
-                pinyin=py_tone,
-                sort_order=sort_order,
+                pinyin="",
+                pinyin_list="[]",
+                pinyin_plain="",
+                remark="练习册批量导入",
                 created_by=operator_id,
                 updated_by=operator_id,
             )
-        )
-        if hz not in lib_hanzi:
-            db.add(
-                WordLibrary(
-                    hanzi=hz,
-                    pinyin=py_tone,
-                    pinyin_plain=py_plain,
-                    remark="练习册批量导入",
-                    created_by=operator_id,
-                    updated_by=operator_id,
-                )
-            )
+            apply_pinyin_fields(word, py_result)
+            db.add(word)
             lib_hanzi.add(hz)
         else:
             skipped_in_library.append(hz)

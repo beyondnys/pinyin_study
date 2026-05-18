@@ -24,12 +24,18 @@ class WordLibrary(Base, AuditMixin):
     pinyin: Mapped[str] = mapped_column(
         String(64),
         nullable=False,
-        comment="带声调拼音，展示与判题用",
+        comment="主读音（声调符号，如 zhōng），展示与判题首选",
+    )
+    pinyin_list: Mapped[str] = mapped_column(
+        String(512),
+        default="[]",
+        nullable=False,
+        comment="全部读音 JSON 数组，含多音字如 [\"zhōng\",\"zhòng\"]",
     )
     pinyin_plain: Mapped[str] = mapped_column(
         String(64),
         nullable=False,
-        comment="无声调拼音，检索与比对用",
+        comment="主读音无声调形式，检索用",
     )
     tone: Mapped[Optional[int]] = mapped_column(
         SmallInteger,

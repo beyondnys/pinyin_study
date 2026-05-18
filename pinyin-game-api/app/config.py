@@ -9,8 +9,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    DATABASE_URL: str = "mysql+pymysql://root:password@127.0.0.1:3306/pinyin_game?charset=utf8mb4"
-    REDIS_URL: str = "redis://127.0.0.1:6379/0"
+    DATABASE_URL: str = "mysql+pymysql://pinyin_game:pinyin_game_nys@127.0.0.1:3306/pinyin_game?charset=utf8mb4"
+    REDIS_URL: str = "redis://:redis123@127.0.0.1:6379/0"
     JWT_SECRET: str = "dev-secret-change-in-production"
     JWT_EXPIRE_DAYS: int = 7
     SINGLE_LOGIN: bool = False
