@@ -1,6 +1,9 @@
 <template>
   <div class="book-list">
-    <h2 class="page-title">📚 选择练习册</h2>
+    <div class="page-head">
+      <button type="button" class="back-btn" @click="goGames">← 游戏大厅</button>
+      <h2 class="page-title">🎈 拼音练练看 · 选择练习册</h2>
+    </div>
 
     <el-skeleton v-if="loading" :rows="4" animated />
     <div v-else class="book-grid">
@@ -37,6 +40,11 @@ onMounted(async () => {
   }
 })
 
+function goGames() {
+  playSound('click')
+  router.push('/games')
+}
+
 function goPractice(id: number) {
   playSound('click')
   router.push(`/practice/${id}`)
@@ -44,9 +52,20 @@ function goPractice(id: number) {
 </script>
 
 <style scoped>
+.page-head {
+  margin-bottom: 16px;
+}
+.back-btn {
+  border: none;
+  background: transparent;
+  color: #4a90e2;
+  font-size: 14px;
+  padding: 0 0 8px;
+  cursor: pointer;
+}
 .page-title {
   font-size: clamp(18px, 4.5vw, 22px);
-  margin-bottom: 16px;
+  margin: 0;
   color: #4a90e2;
 }
 .book-grid {

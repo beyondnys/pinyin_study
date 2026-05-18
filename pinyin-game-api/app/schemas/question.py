@@ -26,6 +26,8 @@ class QuestionOut(BaseModel):
     pinyin: str
     pinyin_list: List[str] = []
     sort_order: int
+    hanzi_audio_url: Optional[str] = None
+    pinyin_audio_url: Optional[str] = None
 
     class Config:
         from_attributes = True

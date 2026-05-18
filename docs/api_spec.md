@@ -38,6 +38,7 @@
 | POST | /web/practice/submit | 提交练习 |
 | GET | /web/practice/records/{id} | 练习结果 |
 | GET | /web/wrong-questions | 错题本 |
+| POST | /web/wrong-questions/attempt | 配对选错时记入错题（即时，无需提交练习） |
 
 ### 后台 /admin
 

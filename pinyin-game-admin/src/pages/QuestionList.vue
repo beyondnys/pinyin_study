@@ -10,6 +10,12 @@
       <el-table-column prop="sort_order" label="排序" width="80" />
       <el-table-column prop="hanzi" label="汉字" width="100" />
       <el-table-column prop="pinyin" label="拼音" />
+      <el-table-column label="朗读" width="100">
+        <template #default="{ row }">
+          <el-button v-if="row.hanzi_audio_url" link type="primary" @click="play(row.hanzi_audio_url)">字</el-button>
+          <el-button v-if="row.pinyin_audio_url" link type="primary" @click="play(row.pinyin_audio_url)">音</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="100">
         <template #default="{ row }">
           <el-button link type="danger" @click="onDelete(row.id)">删除</el-button>
@@ -58,6 +64,11 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { batchImportQuestions, createQuestion, deleteQuestion, fetchQuestions } from '@/api/books'
+import { playTtsAudio } from '@/utils/ttsAudio'
+
+function play(url?: string) {
+  playTtsAudio(url)
+}
 
 const route = useRoute()
 const bookId = Number(route.params.bookId)

@@ -13,6 +13,8 @@ export interface GameCard {
   question_id: number
   card_type: 'hanzi' | 'pinyin'
   text: string
+  /** TTS 预签名地址，汉字/拼音卡均有 */
+  audio_url?: string | null
 }
 
 export interface GameData {

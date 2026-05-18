@@ -5,7 +5,25 @@
     <ul v-else class="wrong-list">
       <li v-for="item in list" :key="item.id" class="wrong-item">
         <span class="hanzi">{{ item.hanzi }}</span>
+        <button
+          v-if="item.hanzi_audio_url"
+          type="button"
+          class="speak-btn"
+          aria-label="读汉字"
+          @click="play(item.hanzi_audio_url)"
+        >
+          🔊
+        </button>
         <span class="pinyin">{{ item.pinyin }}</span>
+        <button
+          v-if="item.pinyin_audio_url"
+          type="button"
+          class="speak-btn"
+          aria-label="读拼音"
+          @click="play(item.pinyin_audio_url)"
+        >
+          🔊
+        </button>
         <span class="meta">错 {{ item.wrong_count }} 次</span>
       </li>
       <el-empty v-if="!list.length" description="暂无错题，继续加油！" />
@@ -16,6 +34,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { fetchWrongQuestions, type WrongItem } from '@/api/wrongQuestions'
+import { playTtsAudio } from '@/utils/ttsAudio'
+
+function play(url?: string | null) {
+  playTtsAudio(url)
+}
 
 const list = ref<WrongItem[]>([])
 const loading = ref(true)
@@ -62,5 +85,12 @@ onMounted(async () => {
 .meta {
   font-size: 12px;
   color: #999;
+}
+.speak-btn {
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  padding: 4px;
+  cursor: pointer;
 }
 </style>

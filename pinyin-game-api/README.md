@@ -65,6 +65,10 @@ python -m app.scripts.migrate_pinyin_to_tone             # 写入
 
 新导入/字库生成均使用 `Style.TONE`；判题时 `user_pinyin` 命中主音或 `pinyin_list` 中任一读法均算正确。
 
+### TTS 语音（edge-tts + MinIO）
+
+详见 [docs/tts.md](../docs/tts.md)。迁移表：`sql/migrate_tts_audio.sql`；回填：`python -m app.scripts.backfill_tts_audio`。
+
 ## Windows 发布打包
 
 在项目根目录双击或执行：
@@ -72,6 +76,8 @@ python -m app.scripts.migrate_pinyin_to_tone             # 写入
 ```bat
 build.bat
 ```
+
+（`build.bat` 会调用同目录的 `build.ps1` 生成 zip，避免 bat 内多行 PowerShell 在 cmd 下被拆行报错。）
 
 会在 `dist` 目录生成 **`yyyyMMddHHmmss.zip` 压缩包**（不是解压后的文件夹；例如 `20250517143022.zip`），包含：
 

@@ -95,9 +95,31 @@ def batch_import_book_questions(
     book.question_count = sort_order
     db.commit()
 
+    added_question_ids: list[int] = []
+    added_word_ids: list[int] = []
+    if added_hanzi:
+        qs = (
+            db.query(PracticeQuestion)
+            .filter(
+                PracticeQuestion.book_id == book_id,
+                PracticeQuestion.hanzi.in_(added_hanzi),
+                PracticeQuestion.is_deleted == 0,
+            )
+            .all()
+        )
+        added_question_ids = [q.id for q in qs]
+        words = (
+            db.query(WordLibrary)
+            .filter(WordLibrary.hanzi.in_(added_hanzi), WordLibrary.is_deleted == 0)
+            .all()
+        )
+        added_word_ids = [w.id for w in words]
+
     return {
         "added_count": len(added_hanzi),
         "added_hanzi": added_hanzi,
+        "added_question_ids": added_question_ids,
+        "added_word_ids": added_word_ids,
         "skipped_in_book": skipped_in_book,
         "skipped_in_library": skipped_in_library,
         "invalid_stripped": invalid_stripped,

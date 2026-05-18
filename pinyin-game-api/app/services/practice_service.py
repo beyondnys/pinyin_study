@@ -16,6 +16,7 @@ from app.models.practice_record import PracticeRecord
 from app.models.word_library import WordLibrary
 from app.learning import LearningMasteryService
 from app.schemas.practice import AnswerItem, GameCardOut, GameDataOut
+from app.services.tts.tts_audio_service import lookup_question_audio_map
 from app.services.wrong_question_service import upsert_wrong_questions
 from app.utils.pinyin_util import is_pinyin_match
 
@@ -33,16 +34,20 @@ def get_book_or_404(db: Session, book_id: int) -> PracticeBook:
 
 def _cards_from_pairs(
     pairs: List[Tuple[int, str, str]],
+    audio_map: Optional[dict] = None,
 ) -> List[GameCardOut]:
     """由 (question_id, hanzi, pinyin) 列表生成打乱后的卡片。"""
+    audio_map = audio_map or {}
     cards: List[GameCardOut] = []
     for qid, hanzi, pinyin in pairs:
+        urls = audio_map.get(qid, {})
         cards.append(
             GameCardOut(
                 card_id=f"h-{qid}-{uuid.uuid4().hex[:6]}",
                 question_id=qid,
                 card_type="hanzi",
                 text=hanzi,
+                audio_url=urls.get("hanzi"),
             )
         )
         cards.append(
@@ -51,6 +56,7 @@ def _cards_from_pairs(
                 question_id=qid,
                 card_type="pinyin",
                 text=pinyin,
+                audio_url=urls.get("pinyin"),
             )
         )
     random.shuffle(cards)
@@ -75,6 +81,10 @@ def build_game_data(
         if not picked:
             raise ValueError("该练习册暂无题目，请在后台添加或执行演示数据脚本")
         pairs = [(c.question_id, c.hanzi, c.pinyin) for c in picked]
+        qids = [p[0] for p in pairs]
+        audio_map = lookup_question_audio_map(db, qids)
+        cards = _cards_from_pairs(pairs, audio_map)
+        return GameDataOut(book_id=book.id, book_title=book.title, total=len(pairs), cards=cards)
     else:
         questions = (
             db.query(PracticeQuestion)
@@ -86,7 +96,9 @@ def build_game_data(
         if len(questions) > pick_count:
             questions = random.sample(questions, pick_count)
         pairs = [(q.id, q.hanzi, q.pinyin) for q in questions]
-    cards = _cards_from_pairs(pairs)
+    qids = [p[0] for p in pairs]
+    audio_map = lookup_question_audio_map(db, qids)
+    cards = _cards_from_pairs(pairs, audio_map)
     return GameDataOut(book_id=book.id, book_title=book.title, total=len(pairs), cards=cards)
 
 
@@ -197,3 +209,41 @@ def submit_practice(
     db.commit()
     db.refresh(record)
     return record
+
+
+def record_wrong_pair_attempt(
+    db: Session,
+    user_id: int,
+    book_id: int,
+    question_id: int,
+    user_pinyin: str,
+) -> bool:
+    """
+    配对失败时写入错题本并更新掌握度。
+    返回 True 表示已记为错题（拼音与标准答案不一致）。
+    """
+    resolved = _resolve_answer(db, book_id, AnswerItem(question_id=question_id, user_pinyin=user_pinyin))
+    if not resolved:
+        return False
+    hanzi, correct_pinyin, qid, is_ok = resolved
+    if is_ok:
+        return False
+
+    record_book_id = book_id
+    if book_id <= 0:
+        fallback = (
+            db.query(PracticeBook)
+            .filter(PracticeBook.is_deleted == 0, PracticeBook.status == 1)
+            .order_by(PracticeBook.id)
+            .first()
+        )
+        record_book_id = fallback.id if fallback else 0
+    else:
+        get_book_or_404(db, book_id)
+
+    upsert_wrong_questions(db, user_id, [(hanzi, correct_pinyin, record_book_id or 0)])
+    effective_book_id = record_book_id if record_book_id > 0 else book_id
+    if qid > 0 and effective_book_id > 0:
+        LearningMasteryService(db).record_pinyin_attempt(user_id, effective_book_id, qid, False)
+    db.commit()
+    return True

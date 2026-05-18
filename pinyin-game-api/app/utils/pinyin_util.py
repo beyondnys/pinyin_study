@@ -37,10 +37,11 @@ def normalize_pinyin_for_compare(text: str) -> str:
     return (text or "").strip().lower()
 
 
-def word_to_out_dict(word) -> dict:
-    """字库 ORM -> API 字典（含解析后的 pinyin_list）。"""
+def word_to_out_dict(word, audio: dict | None = None) -> dict:
+    """字库 ORM -> API 字典（含解析后的 pinyin_list、可选 TTS URL）。"""
     from app.schemas.word import WordOut
 
+    audio = audio or {}
     return WordOut(
         id=word.id,
         hanzi=word.hanzi,
@@ -48,13 +49,16 @@ def word_to_out_dict(word) -> dict:
         pinyin_list=pinyin_list_for_api(word.pinyin, word.pinyin_list),
         pinyin_plain=word.pinyin_plain,
         remark=word.remark,
+        hanzi_audio_url=audio.get("hanzi"),
+        pinyin_audio_url=audio.get("pinyin"),
     ).model_dump()
 
 
-def question_to_out_dict(question) -> dict:
+def question_to_out_dict(question, audio: dict | None = None) -> dict:
     """题目 ORM -> API 字典。"""
     from app.schemas.question import QuestionOut
 
+    audio = audio or {}
     return QuestionOut(
         id=question.id,
         book_id=question.book_id,
@@ -62,6 +66,8 @@ def question_to_out_dict(question) -> dict:
         pinyin=question.pinyin,
         pinyin_list=pinyin_list_for_api(question.pinyin, question.pinyin_list),
         sort_order=question.sort_order,
+        hanzi_audio_url=audio.get("hanzi"),
+        pinyin_audio_url=audio.get("pinyin"),
     ).model_dump()
 
 

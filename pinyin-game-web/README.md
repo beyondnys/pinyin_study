@@ -1,6 +1,8 @@
 # 拼音练习 - 前台学习端
 
-Vue 3 + Vite + TypeScript，移动端优先的儿童拼音配对游戏。
+Vue 3 + Vite + TypeScript，移动端优先的儿童学习游戏前台。登录后进入 **游戏大厅**（`/games`），当前已上线「🎈 拼音练练看」；其余游戏显示「开发中」。
+
+游戏列表配置见 `src/config/games.ts`。
 
 ## 启动
 
@@ -28,6 +30,12 @@ npm run build
 产物在 `dist/`，请求会直连生产 API。若临时指向其他地址，可在 `.env.local` 中设置 `VITE_API_BASE_URL` 后重新构建。
 
 生产登录接口完整地址为 `https://game.beyondttyy.top/api/auth/login`（`baseURL` + `/auth/login`）。若服务器返回 404 且日志为 `POST /auth/login`，是 Nginx 反代剥掉了 `/api`，见 [docs/deployment.md](../docs/deployment.md) 与 `nginx/game.beyondttyy.top.conf`。
+
+## TTS 朗读
+
+练习页汉字/拼音卡片、错题本支持 🔊 播放（需后端已生成音频，见 [docs/tts.md](../docs/tts.md)）。
+
+配对选错（汉字与错误拼音）会即时写入错题本（`POST /web/wrong-questions/attempt`），无需先点「完成」。
 
 ### 手机 / 局域网调试
 

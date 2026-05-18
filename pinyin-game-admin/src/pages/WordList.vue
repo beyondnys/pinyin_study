@@ -9,6 +9,12 @@
       <el-table-column prop="hanzi" label="汉字" width="100" />
       <el-table-column prop="pinyin" label="拼音" />
       <el-table-column prop="pinyin_plain" label="无声调" />
+      <el-table-column label="朗读" width="100">
+        <template #default="{ row }">
+          <el-button v-if="row.hanzi_audio_url" link type="primary" @click="play(row.hanzi_audio_url)">字</el-button>
+          <el-button v-if="row.pinyin_audio_url" link type="primary" @click="play(row.pinyin_audio_url)">音</el-button>
+        </template>
+      </el-table-column>
       <el-table-column prop="remark" label="备注" />
       <el-table-column label="操作" width="120">
         <template #default="{ row }">
@@ -36,6 +42,11 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { createWord, deleteWord, fetchWords, updateWord } from '@/api/words'
+import { playTtsAudio } from '@/utils/ttsAudio'
+
+function play(url?: string) {
+  playTtsAudio(url)
+}
 
 const list = ref<any[]>([])
 const loading = ref(false)

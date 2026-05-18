@@ -6,6 +6,7 @@
       :text="card.text"
       :card-type="card.card_type"
       :state="cardStates[card.card_id] || 'idle'"
+      :audio-url="card.audio_url"
       @click="$emit('card-click', card)"
     />
   </div>

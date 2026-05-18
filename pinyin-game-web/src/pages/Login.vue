@@ -1,8 +1,8 @@
 <template>
   <div class="login-page page-container">
     <div class="login-card">
-      <h1>🌈 拼音小课堂</h1>
-      <p class="subtitle">{{ mode === 'login' ? '一起来练拼音吧！' : '创建你的学习账号' }}</p>
+      <h1>🌈 游戏学习小课堂</h1>
+      <p class="subtitle">{{ mode === 'login' ? '一起来练练吧！' : '创建你的学习账号' }}</p>
 
       <el-tabs v-model="mode" class="auth-tabs" stretch>
         <el-tab-pane label="登录" name="login" />
@@ -92,7 +92,7 @@ async function onLogin() {
   try {
     await auth.login(loginForm.username.trim(), loginForm.password)
     ElMessage.success('登录成功')
-    router.push('/books')
+    router.push('/games')
   } catch {
     /* request 已提示 */
   } finally {
@@ -122,7 +122,7 @@ async function onRegister() {
   try {
     await auth.register(username, registerForm.password, registerForm.nickname.trim())
     ElMessage.success('注册成功')
-    router.push('/books')
+    router.push('/games')
   } catch {
     /* request 已提示 */
   } finally {

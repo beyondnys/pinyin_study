@@ -9,7 +9,8 @@ const router = createRouter({
       path: '/',
       component: () => import('@/layouts/MainLayout.vue'),
       children: [
-        { path: '', redirect: '/books' },
+        { path: '', redirect: '/games' },
+        { path: 'games', name: 'Games', component: () => import('@/pages/GameList.vue') },
         { path: 'books', name: 'Books', component: () => import('@/pages/BookList.vue') },
         { path: 'practice/:bookId', name: 'Practice', component: () => import('@/pages/PracticeGame.vue') },
         { path: 'result/:recordId', name: 'Result', component: () => import('@/pages/PracticeResult.vue') },
@@ -22,7 +23,7 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   const token = getToken()
   if (to.meta.guest) {
-    if (token) next('/books')
+    if (token) next('/games')
     else next()
     return
   }

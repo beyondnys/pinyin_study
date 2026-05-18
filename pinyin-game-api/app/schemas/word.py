@@ -24,6 +24,8 @@ class WordOut(BaseModel):
     pinyin_list: List[str] = []
     pinyin_plain: str
     remark: str
+    hanzi_audio_url: Optional[str] = None
+    pinyin_audio_url: Optional[str] = None
 
     class Config:
         from_attributes = True

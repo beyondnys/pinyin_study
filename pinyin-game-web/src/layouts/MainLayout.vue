@@ -1,8 +1,9 @@
 <template>
   <div class="main-layout page-container">
     <header class="top-bar">
-      <h1 class="logo">🎈 拼音练习</h1>
+      <router-link to="/games" class="logo">🌈 游戏学习小课堂</router-link>
       <nav>
+        <router-link to="/games">游戏大厅</router-link>
         <router-link to="/books">练习册</router-link>
         <router-link to="/wrong-questions">错题本</router-link>
         <el-button link type="danger" @click="onLogout">退出</el-button>
@@ -41,6 +42,10 @@ async function onLogout() {
 .logo {
   font-size: clamp(18px, 4vw, 22px);
   color: #ff6b6b;
+  text-decoration: none;
+}
+.logo:hover {
+  opacity: 0.9;
 }
 nav {
   display: flex;

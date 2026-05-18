@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class GameCardOut(BaseModel):
@@ -11,6 +11,7 @@ class GameCardOut(BaseModel):
     question_id: int
     card_type: str  # hanzi | pinyin
     text: str
+    audio_url: Optional[str] = None
 
 
 class GameDataOut(BaseModel):

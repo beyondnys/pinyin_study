@@ -2,6 +2,8 @@
 
 与 **错题本 `wrong_questions`** 独立：错题本面向展示与运营；掌握度表面向 **加权抽题** 与 **复习间隔**。
 
+配对游戏选错时，前台会调用 `POST /api/web/wrong-questions/attempt`，同时更新错题本与 `user_item_mastery` 的答错记录。
+
 ## 粒度
 
 `user_id` + `content_type` + `content_id` + `scope_type` + `scope_id`

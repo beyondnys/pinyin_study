@@ -16,5 +16,26 @@ class Settings(BaseSettings):
     SINGLE_LOGIN: bool = False
     CORS_ORIGINS: str = "*"
 
+    # MinIO（S3 兼容）
+    MINIO_ENDPOINT: str = "minio.beyondttyy.top"
+    MINIO_ACCESS_KEY: str = "admin"
+    MINIO_SECRET_KEY: str = ""
+    MINIO_BUCKET: str = "tts"
+    MINIO_SECURE: bool = True
+    MINIO_REGION: str = "us-east-1"
+    MINIO_PRESIGN_EXPIRE_SECONDS: int = 7 * 24 * 3600
+    # 为 true 时启动会 HeadBucket/CreateBucket（需更高权限）；生产建议在控制台先建桶
+    MINIO_AUTO_CREATE_BUCKET: bool = False
+
+    # TTS
+    TTS_PROVIDER: str = "edge"
+    TTS_DEFAULT_VOICE: str = "zh-CN-XiaoxiaoNeural"
+    TTS_MAX_TEXT_LEN: int = 200
+    TTS_TIMEOUT_SECONDS: int = 60
+    TTS_ALLOWED_VOICES: str = (
+        "zh-CN-XiaoxiaoNeural,zh-CN-YunxiNeural,zh-CN-YunjianNeural,zh-CN-XiaoyiNeural"
+    )
+
 
 settings = Settings()
+

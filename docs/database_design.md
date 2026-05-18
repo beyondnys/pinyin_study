@@ -107,6 +107,8 @@
 
 与 `user_item_mastery` 独立，不参与加权抽题。
 
+写入时机：配对游戏选错（`POST /api/web/wrong-questions/attempt`）；或练习提交时拼音判错（`POST /api/web/practice/submit` 中 `is_correct=0`）。
+
 | 字段 | 说明 |
 |------|------|
 | user_id | 学生用户 ID |

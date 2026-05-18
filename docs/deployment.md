@@ -25,8 +25,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# 编辑 .env 生产配置
+# 编辑 .env 生产配置（含 MinIO、TTS，见 docs/tts.md）
+mysql ... pinyin_game < sql/migrate_tts_audio.sql
 ```
+
+生产 MinIO 示例：`MINIO_ENDPOINT=minio.beyondttyy.top`，`MINIO_SECURE=true`，桶需允许 API 服务上传；访问音频使用预签名 URL。
 
 ### systemd 示例
 

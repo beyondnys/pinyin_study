@@ -11,6 +11,7 @@ from app.routers.admin import dashboard as admin_dashboard
 from app.routers.admin import import_tasks as admin_import
 from app.routers.admin import practice_records as admin_records
 from app.routers.admin import users as admin_users
+from app.routers.admin import tts as admin_tts
 from app.routers.admin import words as admin_words
 from app.routers.admin import wrong_questions as admin_wrong
 from app.routers.web import books as web_books
@@ -32,6 +33,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["认证"])
 app.include_router(admin_dashboard.router, prefix="/api/admin/dashboard", tags=["管理-仪表盘"])
 app.include_router(admin_users.router, prefix="/api/admin/users", tags=["管理-用户"])
 app.include_router(admin_words.router, prefix="/api/admin/words", tags=["管理-字库"])
+app.include_router(admin_tts.router, prefix="/api/admin/tts", tags=["管理-TTS"])
 app.include_router(admin_books.router, prefix="/api/admin/books", tags=["管理-练习册"])
 app.include_router(admin_import.router, prefix="/api/admin/import-tasks", tags=["管理-导入"])
 app.include_router(admin_records.router, prefix="/api/admin/practice-records", tags=["管理-学习记录"])

@@ -1,7 +1,7 @@
 """练习册管理。"""
 
 from __future__ import annotations
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -19,6 +19,11 @@ from app.schemas.question import (
 from app.services.pinyin_service import hanzi_to_pinyin
 from app.utils.pinyin_util import apply_pinyin_fields, question_to_out_dict
 from app.services.question_import_service import batch_import_book_questions
+from app.services.tts.tts_audio_service import (
+    generate_tts_for_question,
+    lookup_question_audio_map,
+    run_tts_background_for_questions,
+)
 
 router = APIRouter(dependencies=[Depends(require_admin)])
 
@@ -86,13 +91,16 @@ def list_questions(book_id: int, db: Session = Depends(get_db)):
         .order_by(PracticeQuestion.sort_order, PracticeQuestion.id)
         .all()
     )
-    return success([question_to_out_dict(q) for q in items])
+    qids = [q.id for q in items]
+    audio_map = lookup_question_audio_map(db, qids)
+    return success([question_to_out_dict(q, audio_map.get(q.id)) for q in items])
 
 
 @router.post("/{book_id}/questions/batch-import")
-def batch_import_questions(
+async def batch_import_questions(
     book_id: int,
     body: QuestionBatchImport,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     admin: dict = Depends(require_admin),
 ):
@@ -105,11 +113,18 @@ def batch_import_questions(
         return fail(1, str(e))
     if result["added_count"] == 0 and not result["skipped_in_book"] and not result["skipped_in_library"]:
         return fail(1, "未识别到可导入的汉字")
+    qids = result.get("added_question_ids") or []
+    if qids:
+        background_tasks.add_task(
+            run_tts_background_for_questions,
+            qids,
+            admin.get("user_id"),
+        )
     return success(result)
 
 
 @router.post("/{book_id}/questions")
-def create_question(
+async def create_question(
     book_id: int, body: QuestionCreate, db: Session = Depends(get_db), admin: dict = Depends(require_admin)
 ):
     """为练习册添加题目。"""
@@ -136,7 +151,9 @@ def create_question(
     )
     db.commit()
     db.refresh(q)
-    return success(question_to_out_dict(q))
+    await generate_tts_for_question(db, q.id, q.hanzi, q.pinyin, admin.get("user_id"))
+    audio = lookup_question_audio_map(db, [q.id]).get(q.id)
+    return success(question_to_out_dict(q, audio))
 
 
 @router.put("/{book_id}/questions/{question_id}")
@@ -168,7 +185,8 @@ def update_question(
         q.sort_order = body.sort_order
     q.updated_by = admin["user_id"]
     db.commit()
-    return success(question_to_out_dict(q))
+    audio = lookup_question_audio_map(db, [q.id]).get(q.id)
+    return success(question_to_out_dict(q, audio))
 
 
 @router.delete("/{book_id}/questions/{question_id}")

@@ -1,8 +1,8 @@
 <template>
   <div class="practice-game">
     <header class="game-header">
-      <h2>{{ practiceStore.bookTitle || '拼音练习' }}</h2>
-      <p class="game-tip">请点选汉字与对应拼音，配对成功会变色</p>
+      <h2>{{ practiceStore.bookTitle || '拼音练练看' }}</h2>
+      <p class="game-tip">请点选汉字与对应拼音，配对成功会变色，点击小喇叭会播放读音</p>
       <div class="stats">
         <span>进度：{{ matchedCount }} / {{ practiceStore.total }}</span>
         <span>正确率：{{ liveAccuracy }}%</span>
@@ -40,6 +40,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { fetchGame, type GameCard } from '@/api/books'
 import { submitPractice } from '@/api/practice'
+import { reportWrongAttempt } from '@/api/wrongQuestions'
 import GameBoard from '@/components/GameBoard.vue'
 import ResultDialog from '@/components/ResultDialog.vue'
 import { usePracticeStore } from '@/stores/practice'
@@ -174,12 +175,30 @@ function onCardClick(card: GameCard) {
     cardStates[a.card_id] = 'wrong'
     cardStates[b.card_id] = 'wrong'
     playSound('wrong')
+    void saveWrongPair(a, b)
     setTimeout(() => {
       if (cardStates[a.card_id] === 'wrong') cardStates[a.card_id] = 'idle'
       if (cardStates[b.card_id] === 'wrong') cardStates[b.card_id] = 'idle'
     }, 500)
   }
   selectedCards.value = []
+}
+
+/** 汉字与错误拼音配对时写入错题本 */
+async function saveWrongPair(a: GameCard, b: GameCard) {
+  const hanziCard = a.card_type === 'hanzi' ? a : b.card_type === 'hanzi' ? b : null
+  const pinyinCard = a.card_type === 'pinyin' ? a : b.card_type === 'pinyin' ? b : null
+  if (!hanziCard || !pinyinCard || hanziCard.question_id === pinyinCard.question_id) return
+  if (!practiceStore.bookId) return
+  try {
+    await reportWrongAttempt({
+      book_id: practiceStore.bookId,
+      question_id: hanziCard.question_id,
+      user_pinyin: pinyinCard.text,
+    })
+  } catch {
+    /* 网络失败不打断游戏，提交前可再次配对触发 */
+  }
 }
 
 async function submitAll() {

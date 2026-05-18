@@ -10,6 +10,10 @@ from app.models.word_library import WordLibrary
 from app.response import fail, success
 from app.schemas.word import WordCreate, WordOut, WordUpdate
 from app.services.pinyin_service import hanzi_to_pinyin
+from app.services.tts.tts_audio_service import (
+    generate_tts_for_word,
+    lookup_word_audio_map,
+)
 from app.utils.pinyin_util import apply_pinyin_fields, word_to_out_dict
 
 router = APIRouter(dependencies=[Depends(require_admin)])
@@ -28,11 +32,16 @@ def list_words(
         q = q.filter(WordLibrary.hanzi.contains(keyword))
     total = q.count()
     items = q.order_by(WordLibrary.id.desc()).offset((page - 1) * page_size).limit(page_size).all()
-    return success({"total": total, "items": [word_to_out_dict(w) for w in items]})
+    audio_map = lookup_word_audio_map(db, [w.id for w in items])
+    return success(
+        {"total": total, "items": [word_to_out_dict(w, audio_map.get(w.id)) for w in items]}
+    )
 
 
 @router.post("")
-def create_word(body: WordCreate, db: Session = Depends(get_db), admin: dict = Depends(require_admin)):
+async def create_word(
+    body: WordCreate, db: Session = Depends(get_db), admin: dict = Depends(require_admin)
+):
     """新增字库条目，拼音可自动生成。"""
     py_result = hanzi_to_pinyin(body.hanzi)
     w = WordLibrary(
@@ -48,7 +57,9 @@ def create_word(body: WordCreate, db: Session = Depends(get_db), admin: dict = D
     db.add(w)
     db.commit()
     db.refresh(w)
-    return success(word_to_out_dict(w))
+    await generate_tts_for_word(db, w.id, w.hanzi, w.pinyin, admin.get("user_id"))
+    audio = lookup_word_audio_map(db, [w.id]).get(w.id)
+    return success(word_to_out_dict(w, audio))
 
 
 @router.put("/{word_id}")
@@ -66,7 +77,8 @@ def update_word(word_id: int, body: WordUpdate, db: Session = Depends(get_db), a
         w.remark = body.remark
     w.updated_by = admin["user_id"]
     db.commit()
-    return success(word_to_out_dict(w))
+    audio = lookup_word_audio_map(db, [w.id]).get(w.id)
+    return success(word_to_out_dict(w, audio))
 
 
 @router.delete("/{word_id}")
