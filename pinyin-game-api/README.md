@@ -5,7 +5,7 @@ FastAPI 后端服务。
 ## 环境
 
 - **推荐 Python 3.11 或 3.12**（规格要求 3.10+）
-- 若使用 **Python 3.9**，项目已加 `from __future__ import annotations` 兼容，但建议尽快升级
+- 若使用 **Python 3.9**：Pydantic 模型与 SQLAlchemy 须写 `Optional[str]`，勿用 `str | None`；建议尽快升级到 3.10+
 
 ## 启动
 
@@ -64,6 +64,25 @@ python -m app.scripts.migrate_pinyin_to_tone             # 写入
 ```
 
 新导入/字库生成均使用 `Style.TONE`；判题时 `user_pinyin` 命中主音或 `pinyin_list` 中任一读法均算正确。
+
+### 拼音练习游戏
+
+```bash
+mysql -u root -p pinyin_game < ../sql/migrate_pinyin_select_game.sql
+python -m app.scripts.sync_pinyin_questions
+```
+
+接口前缀：`/api/game/pinyin-select`（见 [docs/api_spec.md](../docs/api_spec.md)）。
+
+**排查**：前台点击声母/韵母顶部出现 `Not Found`，多为本机 `uvicorn` 未加载新路由。请用 `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` 重启；可访问 `http://127.0.0.1:8000/docs` 确认是否存在 `GET /api/game/pinyin-select/part-audio`。
+
+声母/韵母朗读优先使用 [hanyupinyin.cn](http://www.hanyupinyin.cn/) 标准 mp3（抓取脚本见下），无本地文件时用汉语认读字 TTS（`app/utils/pinyin_part_tts_util.py`）。
+
+```bash
+python -m app.scripts.scrape_hanyupinyin_cn --download
+```
+
+会写入 `data/hanyupinyin_cn/pinyin_parts.json`，并将 mp3 同步到 `pinyin-game-web/public/sounds/pinyin-parts/`。
 
 ### TTS 语音（edge-tts + MinIO）
 

@@ -17,6 +17,7 @@ from app.routers.admin import wrong_questions as admin_wrong
 from app.routers.web import books as web_books
 from app.routers.web import practice as web_practice
 from app.routers.web import wrong_questions as web_wrong
+from app.routers.game import pinyin_select as game_pinyin_select
 
 app = FastAPI(title="拼音练习 API", version="1.0.0")
 
@@ -41,6 +42,11 @@ app.include_router(admin_wrong.router, prefix="/api/admin/wrong-questions", tags
 app.include_router(web_books.router, prefix="/api/web/books", tags=["前台-练习册"])
 app.include_router(web_practice.router, prefix="/api/web/practice", tags=["前台-练习"])
 app.include_router(web_wrong.router, prefix="/api/web/wrong-questions", tags=["前台-错题"])
+app.include_router(
+    game_pinyin_select.router,
+    prefix="/api/game/pinyin-select",
+    tags=["游戏-拼音练习"],
+)
 
 
 @app.get("/api/health")

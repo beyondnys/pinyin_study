@@ -2,7 +2,7 @@
   <div class="practice-game">
     <header class="game-header">
       <h2>{{ practiceStore.bookTitle || '拼音练练看' }}</h2>
-      <p class="game-tip">请点选汉字与对应拼音，配对成功会变色，点击小喇叭会播放读音</p>
+      <p class="game-tip">点选汉字与对应拼音，配对成功会变色，点击小喇叭播放读音</p>
       <div class="stats">
         <span>进度：{{ matchedCount }} / {{ practiceStore.total }}</span>
         <span>正确率：{{ liveAccuracy }}%</span>

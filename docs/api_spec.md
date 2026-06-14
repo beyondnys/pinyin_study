@@ -40,6 +40,15 @@
 | GET | /web/wrong-questions | 错题本 |
 | POST | /web/wrong-questions/attempt | 配对选错时记入错题（即时，无需提交练习） |
 
+### 游戏 /game/pinyin-select（拼音练习游戏，登录可选）
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /game/pinyin-select/question/next | 随机下一题（不含答案），含 `zero_initial`（无声母时可直选韵母）；Query: session_id, exclude_ids |
+| POST | /game/pinyin-select/answer | 提交声母/韵母/声调，后端判题 |
+| GET | /game/pinyin-select/statistics | 统计，Query: session_id（游客必填） |
+| GET | /game/pinyin-select/part-audio | 声母/韵母朗读，Query: text, kind=initial\|final |
+
 ### 后台 /admin
 
 | 方法 | 路径 | 说明 |

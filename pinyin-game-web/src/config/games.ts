@@ -21,9 +21,10 @@ export const GAME_LIST: GameItem[] = [
   },
   {
     id: 'pinyin-drill',
-    title: '拼音练习',
-    desc: '听音辨调、拼读训练',
-    status: 'dev',
+    title: '拼音练习游戏',
+    desc: '选声母、韵母、声调拼读音',
+    status: 'ready',
+    route: '/pinyin-select',
   },
   {
     id: 'word-link',

@@ -10,6 +10,9 @@ BIZ_PRACTICE_QUESTION_PINYIN = "practice_question_pinyin"
 BIZ_PINYIN_WORD_HANZI = "pinyin_word_hanzi"
 BIZ_PINYIN_WORD_PINYIN = "pinyin_word_pinyin"
 
+# 拼音练习游戏：声母/韵母格子朗读
+BIZ_PINYIN_SELECT_PART = "pinyin_select_part"
+
 GENERATE_PENDING = 0
 GENERATE_RUNNING = 1
 GENERATE_SUCCESS = 2

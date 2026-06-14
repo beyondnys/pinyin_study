@@ -1,0 +1,343 @@
+{
+  "source": "http://www.hanyupinyin.cn/",
+  "mp3_base": "http://du.hanyupinyin.cn/du/pinyin/",
+  "initials": [
+    {
+      "key": "b",
+      "hanzi": "玻",
+      "mp3": "b.mp3",
+      "label": "b 玻"
+    },
+    {
+      "key": "p",
+      "hanzi": "坡",
+      "mp3": "p.mp3",
+      "label": "p 坡"
+    },
+    {
+      "key": "m",
+      "hanzi": "摸",
+      "mp3": "m.mp3",
+      "label": "m 摸"
+    },
+    {
+      "key": "f",
+      "hanzi": "佛",
+      "mp3": "f.mp3",
+      "label": "f 佛"
+    },
+    {
+      "key": "d",
+      "hanzi": "得",
+      "mp3": "d.mp3",
+      "label": "d 得"
+    },
+    {
+      "key": "t",
+      "hanzi": "特",
+      "mp3": "t.mp3",
+      "label": "t 特"
+    },
+    {
+      "key": "n",
+      "hanzi": "讷",
+      "mp3": "n.mp3",
+      "label": "n 讷"
+    },
+    {
+      "key": "l",
+      "hanzi": "勒",
+      "mp3": "l.mp3",
+      "label": "l 勒"
+    },
+    {
+      "key": "g",
+      "hanzi": "歌",
+      "mp3": "g.mp3",
+      "label": "g 歌"
+    },
+    {
+      "key": "k",
+      "hanzi": "科",
+      "mp3": "k.mp3",
+      "label": "k 科"
+    },
+    {
+      "key": "h",
+      "hanzi": "喝",
+      "mp3": "h.mp3",
+      "label": "h 喝"
+    },
+    {
+      "key": "j",
+      "hanzi": "基",
+      "mp3": "j.mp3",
+      "label": "j 基"
+    },
+    {
+      "key": "q",
+      "hanzi": "欺",
+      "mp3": "q.mp3",
+      "label": "q 欺"
+    },
+    {
+      "key": "x",
+      "hanzi": "希",
+      "mp3": "x.mp3",
+      "label": "x 希"
+    },
+    {
+      "key": "zh",
+      "hanzi": "知",
+      "mp3": "zh.mp3",
+      "label": "zh 知"
+    },
+    {
+      "key": "ch",
+      "hanzi": "蚩",
+      "mp3": "ch.mp3",
+      "label": "ch 蚩"
+    },
+    {
+      "key": "sh",
+      "hanzi": "思",
+      "mp3": "sh.mp3",
+      "label": "sh 思"
+    },
+    {
+      "key": "r",
+      "hanzi": "日",
+      "mp3": "r.mp3",
+      "label": "r 日"
+    },
+    {
+      "key": "z",
+      "hanzi": "资",
+      "mp3": "z.mp3",
+      "label": "z 资"
+    },
+    {
+      "key": "c",
+      "hanzi": "雌",
+      "mp3": "c.mp3",
+      "label": "c 雌"
+    },
+    {
+      "key": "s",
+      "hanzi": "思",
+      "mp3": "s.mp3",
+      "label": "s 思"
+    },
+    {
+      "key": "y",
+      "hanzi": "衣",
+      "mp3": "y.mp3",
+      "label": "y 衣"
+    },
+    {
+      "key": "w",
+      "hanzi": "乌",
+      "mp3": "w.mp3",
+      "label": "w 乌"
+    }
+  ],
+  "finals": [
+    {
+      "key": "ɑ",
+      "hanzi": "啊",
+      "mp3": "a.mp3",
+      "label": "ɑ 啊"
+    },
+    {
+      "key": "o",
+      "hanzi": "喔",
+      "mp3": "o.mp3",
+      "label": "o 喔"
+    },
+    {
+      "key": "e",
+      "hanzi": "鹅",
+      "mp3": "e.mp3",
+      "label": "e 鹅"
+    },
+    {
+      "key": "i",
+      "hanzi": "衣",
+      "mp3": "i.mp3",
+      "label": "i 衣"
+    },
+    {
+      "key": "u",
+      "hanzi": "乌",
+      "mp3": "u.mp3",
+      "label": "u 乌"
+    },
+    {
+      "key": "ü",
+      "hanzi": "迂",
+      "mp3": "v.mp3",
+      "label": "ü 迂"
+    },
+    {
+      "key": "ai",
+      "hanzi": "哀",
+      "mp3": "ai.mp3",
+      "label": "ai 哀"
+    },
+    {
+      "key": "ei",
+      "hanzi": "诶",
+      "mp3": "ei.mp3",
+      "label": "ei 诶"
+    },
+    {
+      "key": "ui",
+      "hanzi": "威",
+      "mp3": "ui.mp3",
+      "label": "ui 威"
+    },
+    {
+      "key": "ao",
+      "hanzi": "熬",
+      "mp3": "ao.mp3",
+      "label": "ao 熬"
+    },
+    {
+      "key": "ou",
+      "hanzi": "欧",
+      "mp3": "ou.mp3",
+      "label": "ou 欧"
+    },
+    {
+      "key": "iu",
+      "hanzi": "优",
+      "mp3": "iu.mp3",
+      "label": "iu 优"
+    },
+    {
+      "key": "ie",
+      "hanzi": "耶",
+      "mp3": "ie.mp3",
+      "label": "ie 耶"
+    },
+    {
+      "key": "üe",
+      "hanzi": "约",
+      "mp3": "ve.mp3",
+      "label": "üe 约"
+    },
+    {
+      "key": "er",
+      "hanzi": "耳",
+      "mp3": "er.mp3",
+      "label": "er 耳"
+    },
+    {
+      "key": "an",
+      "hanzi": "安",
+      "mp3": "an.mp3",
+      "label": "an 安"
+    },
+    {
+      "key": "en",
+      "hanzi": "恩",
+      "mp3": "en.mp3",
+      "label": "en 恩"
+    },
+    {
+      "key": "in",
+      "hanzi": "因",
+      "mp3": "in.mp3",
+      "label": "in 因"
+    },
+    {
+      "key": "un",
+      "hanzi": "温",
+      "mp3": "un.mp3",
+      "label": "un 温"
+    },
+    {
+      "key": "ün",
+      "hanzi": "晕",
+      "mp3": "vn.mp3",
+      "label": "ün 晕"
+    },
+    {
+      "key": "ang",
+      "hanzi": "昂",
+      "mp3": "ang.mp3",
+      "label": "ang 昂"
+    },
+    {
+      "key": "eng",
+      "hanzi": "享",
+      "mp3": "eng.mp3",
+      "label": "eng 享"
+    },
+    {
+      "key": "ing",
+      "hanzi": "英",
+      "mp3": "ing.mp3",
+      "label": "ing 英"
+    },
+    {
+      "key": "ong",
+      "hanzi": "翁",
+      "mp3": "ong.mp3",
+      "label": "ong 翁"
+    }
+  ],
+  "tts_maps": {
+    "initials": {
+      "b": "玻",
+      "p": "坡",
+      "m": "摸",
+      "f": "佛",
+      "d": "得",
+      "t": "特",
+      "n": "讷",
+      "l": "勒",
+      "g": "歌",
+      "k": "科",
+      "h": "喝",
+      "j": "基",
+      "q": "欺",
+      "x": "希",
+      "zh": "知",
+      "ch": "蚩",
+      "sh": "思",
+      "r": "日",
+      "z": "资",
+      "c": "雌",
+      "s": "思",
+      "y": "衣",
+      "w": "乌"
+    },
+    "finals": {
+      "a": "啊",
+      "o": "喔",
+      "e": "鹅",
+      "i": "衣",
+      "u": "乌",
+      "v": "迂",
+      "ai": "哀",
+      "ei": "诶",
+      "ui": "威",
+      "ao": "熬",
+      "ou": "欧",
+      "iu": "优",
+      "ie": "耶",
+      "ve": "约",
+      "er": "耳",
+      "an": "安",
+      "en": "恩",
+      "in": "因",
+      "un": "温",
+      "vn": "晕",
+      "ang": "昂",
+      "eng": "享",
+      "ing": "英",
+      "ong": "翁"
+    }
+  }
+}

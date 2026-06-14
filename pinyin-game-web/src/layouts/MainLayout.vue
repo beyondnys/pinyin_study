@@ -3,9 +3,13 @@
     <header class="top-bar">
       <router-link to="/games" class="logo">🌈 游戏学习小课堂</router-link>
       <nav>
-        <router-link to="/games">游戏大厅</router-link>
+        <router-link v-if="!showLobbyBack" to="/games">游戏大厅</router-link>
         <router-link to="/books">练习册</router-link>
         <router-link to="/wrong-questions">错题本</router-link>
+        <router-link v-if="showLobbyBack" to="/games" class="nav-back">
+          <el-icon :size="16"><HomeFilled /></el-icon>
+          <span>游戏大厅</span>
+        </router-link>
         <el-button link type="danger" @click="onLogout">退出</el-button>
       </nav>
     </header>
@@ -16,11 +20,17 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { HomeFilled } from '@element-plus/icons-vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
+
+/** 拼音练习等子游戏页：顶栏「退出」前显示返回大厅 */
+const showLobbyBack = computed(() => route.path === '/pinyin-select')
 
 async function onLogout() {
   await auth.logout()
@@ -56,6 +66,16 @@ nav {
 nav a.router-link-active {
   color: #4a90e2;
   font-weight: bold;
+}
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #4a90e2;
+  font-size: 14px;
+}
+.nav-back:hover {
+  opacity: 0.85;
 }
 .main-content {
   flex: 1;

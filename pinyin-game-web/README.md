@@ -4,6 +4,8 @@ Vue 3 + Vite + TypeScript，移动端优先的儿童学习游戏前台。登录�
 
 游戏列表配置见 `src/config/games.ts`。
 
+**拼音练习游戏**（`/pinyin-select`）：选声母（无声母题跳过）、韵母、声调后判题；界面不展示「无」；韵母可组合（如 i+ang），拼好后自动进入声调；题库来自 `pinyin_question`。
+
 ## 启动
 
 ```bash

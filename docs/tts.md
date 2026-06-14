@@ -4,6 +4,8 @@
 
 - 导入汉字/题目后自动生成 **汉字** 与 **拼音** 两条 MP3，上传 MinIO，元数据写入 `tts_audio_resource`。
 - 接口返回 **预签名 URL**（公网 `https://minio.beyondttyy.top`），前端点击播放，不实时合成。
+- **拼音练习游戏**：点击声母/韵母格子优先播放本地标准 mp3（来自 [hanyupinyin.cn](http://www.hanyupinyin.cn/)），路径 `pinyin-game-web/public/sounds/pinyin-parts/{key}.mp3`；无本地文件时再调用 `GET /api/game/pinyin-select/part-audio`（edge-tts + MinIO）。认读字映射见 `app/utils/pinyin_part_tts_util.py`。
+- **抓取官网读音**：在 `pinyin-game-api` 目录执行 `python -m app.scripts.scrape_hanyupinyin_cn --download`，会生成 `data/hanyupinyin_cn/pinyin_parts.json` 并下载 mp3 到前台 `public/sounds/pinyin-parts/`。
 - 引擎可配置：`TTS_PROVIDER=edge`（预留替换）。
 
 ## 数据库

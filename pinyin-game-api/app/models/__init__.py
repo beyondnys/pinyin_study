@@ -10,6 +10,8 @@ from app.models.practice_answer_detail import PracticeAnswerDetail
 from app.models.wrong_question import WrongQuestion
 from app.models.user_item_mastery import UserItemMastery
 from app.models.import_task import ImportTask
+from app.models.pinyin_question import PinyinQuestion
+from app.models.pinyin_game_record import PinyinGameRecord
 
 __all__ = [
     "User",
@@ -21,4 +23,6 @@ __all__ = [
     "WrongQuestion",
     "UserItemMastery",
     "ImportTask",
+    "PinyinQuestion",
+    "PinyinGameRecord",
 ]

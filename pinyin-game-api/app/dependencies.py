@@ -38,6 +38,31 @@ def get_current_user(
     }
 
 
+def get_optional_user(
+    creds: Optional[HTTPAuthorizationCredentials] = Depends(security),
+) -> Optional[dict]:
+    """
+    可选登录：有合法 Token 则返回用户信息，否则 None。
+    用于允许游客玩的游戏接口。
+    """
+    if not creds or not creds.credentials:
+        return None
+    token = creds.credentials
+    try:
+        claims = decode_token(token)
+    except Exception:
+        return None
+    session = get_login_token(token)
+    if not session:
+        return None
+    return {
+        "user_id": int(claims["sub"]),
+        "username": claims.get("username") or session.get("username"),
+        "role": claims.get("role") or session.get("role"),
+        "token": token,
+    }
+
+
 def require_admin(user: dict = Depends(get_current_user)) -> dict:
     """要求管理员角色。"""
     if user.get("role") != "admin":

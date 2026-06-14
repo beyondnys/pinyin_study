@@ -107,7 +107,7 @@
 
 与 `user_item_mastery` 独立，不参与加权抽题。
 
-写入时机：配对游戏选错（`POST /api/web/wrong-questions/attempt`）；或练习提交时拼音判错（`POST /api/web/practice/submit` 中 `is_correct=0`）。
+写入时机：配对游戏选错（`POST /api/web/wrong-questions/attempt`）；练习提交判错；拼音练习游戏答错（已登录用户，`POST /api/game/pinyin-select/answer`）。
 
 | 字段 | 说明 |
 |------|------|
@@ -117,6 +117,17 @@
 | pinyin | 正确拼音 |
 | wrong_count | 累计答错次数 |
 | last_wrong_at | 最近一次答错时间 |
+
+---
+
+## pinyin_question / pinyin_game_record
+
+拼音练习游戏（选声母/韵母/声调）。迁移：`sql/migrate_pinyin_select_game.sql`；题库同步：`python -m app.scripts.sync_pinyin_questions`。
+
+| 表 | 说明 |
+|----|------|
+| pinyin_question | 单字题库，存 standard initial/final/tone，出题接口不返回答案 |
+| pinyin_game_record | 每次作答记录，user_id 可空，游客用 session_id |
 
 ---
 

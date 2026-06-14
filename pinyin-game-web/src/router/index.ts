@@ -11,6 +11,11 @@ const router = createRouter({
       children: [
         { path: '', redirect: '/games' },
         { path: 'games', name: 'Games', component: () => import('@/pages/GameList.vue') },
+        {
+          path: 'pinyin-select',
+          name: 'PinyinSelect',
+          component: () => import('@/pages/PinyinSelectGame.vue'),
+        },
         { path: 'books', name: 'Books', component: () => import('@/pages/BookList.vue') },
         { path: 'practice/:bookId', name: 'Practice', component: () => import('@/pages/PracticeGame.vue') },
         { path: 'result/:recordId', name: 'Result', component: () => import('@/pages/PracticeResult.vue') },
