@@ -1,8 +1,10 @@
 # 拼音练习 - 前台学习端
 
-Vue 3 + Vite + TypeScript，移动端优先的儿童学习游戏前台。登录后进入 **游戏大厅**（`/games`），当前已上线「🎈 拼音练练看」；其余游戏显示「开发中」。
+Vue 3 + Vite + TypeScript，移动端优先的儿童学习游戏前台。登录后进入 **游戏大厅**（`/games`），当前已上线「🎈 拼音练练看」「词语连连看」「拼音练习游戏」。
 
 游戏列表配置见 `src/config/games.ts`。
+
+**词语连连看**（`/word-books`）：按词语字面顺序连字，相同汉字可互换；棋盘 4×4 优先 16/15 格（最多空 1 格），2 字词为主。
 
 **拼音练习游戏**（`/pinyin-select`）：选声母（无声母题跳过）、韵母、声调后判题；界面不展示「无」；韵母可组合（如 i+ang），拼好后自动进入声调；题库来自 `pinyin_question`。
 
@@ -13,7 +15,7 @@ npm install
 npm run dev
 ```
 
-默认 http://localhost:5173 。开发环境 API 为 `/api`，由 Vite 代理到 `http://127.0.0.1:8000`（见 `.env.development`）。
+默认 http://localhost:5173 。开发环境 API 为 `/api`，由 Vite 代理到 `http://127.0.0.1:8066`（见 `.env.development`）。
 
 ## 环境变量
 
@@ -45,7 +47,7 @@ npm run build
 
 注意：
 
-1. 需先在本机启动后端：`uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`（前台通过 Vite 代理 `/api`，手机无需直连 8000 端口）
+1. 需先在本机启动后端：`uvicorn app.main:app --reload --host 0.0.0.0 --port 8066`（前台通过 Vite 代理 `/api`，手机无需直连 8066 端口）
 2. Windows 防火墙若拦截，需允许 Node/Vite 的专用网络访问
 3. 勿使用 `localhost`，手机应使用电脑的局域网 IP
 

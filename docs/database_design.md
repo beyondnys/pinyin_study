@@ -120,6 +120,21 @@
 
 ---
 
+## word_books / word_questions / word_match_records
+
+词语连连看（按顺序连字成词，2～4 字词每字一卡）。迁移：`sql/migrate_word_link_game.sql`；演示数据：`python -m app.scripts.seed_word_link_demo`。
+
+| 表 | 说明 |
+|----|------|
+| word_books | 词语词库 |
+| word_questions | 词语题目；`meaning` 预留对接外部释义 API |
+| word_match_records | 一次游戏汇总 |
+| word_match_answer_details | 连对的词语明细 |
+
+掌握度：`content_type=word_choice`，`content_id=word_questions.id`。
+
+---
+
 ## pinyin_question / pinyin_game_record
 
 拼音练习游戏（选声母/韵母/声调）。迁移：`sql/migrate_pinyin_select_game.sql`；题库同步：`python -m app.scripts.sync_pinyin_questions`。
@@ -139,7 +154,7 @@
 |------|------|
 | user_id | 学生用户 ID |
 | content_type | pinyin_pair / word_choice / idiom_choice 等 |
-| content_id | 业务主键，拼音为 practice_questions.id |
+| content_id | 业务主键，拼音为 practice_questions.id，词语连连看为 word_questions.id |
 | scope_type | 场景类型，如 book、global |
 | scope_id | 场景 ID，如 book_id |
 | state | unseen / learning / mastered |

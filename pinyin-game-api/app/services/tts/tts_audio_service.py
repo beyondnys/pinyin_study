@@ -278,6 +278,98 @@ def get_audio_urls_by_texts(
     return out
 
 
+def lookup_word_match_audio_map(
+    db: Session, question_ids: List[int], voice_name: str | None = None
+) -> Dict[int, Optional[str]]:
+    """词语连连看题目 ID -> 整词 TTS URL。"""
+    if not question_ids:
+        return {}
+    voice = _resolve_voice(voice_name)
+    out: Dict[int, Optional[str]] = {qid: None for qid in question_ids}
+    rows = (
+        db.query(TtsAudioResource)
+        .filter(
+            TtsAudioResource.biz_id.in_(question_ids),
+            TtsAudioResource.biz_type == tts_biz.BIZ_WORD_MATCH_WORD,
+            TtsAudioResource.voice_name == voice,
+            TtsAudioResource.generate_status == tts_biz.GENERATE_SUCCESS,
+            TtsAudioResource.is_deleted == 0,
+        )
+        .all()
+    )
+    for r in rows:
+        if r.biz_id is not None:
+            out[r.biz_id] = get_presigned_url_for_resource(r)
+    return out
+
+
+async def generate_tts_for_word_question(
+    db: Session,
+    question_id: int,
+    word: str,
+    pinyin: str,
+    operator_id: int | None = None,
+) -> None:
+    """为词语连连看题目生成整词 TTS + 各单字 TTS（游戏格子朗读用）。"""
+    from app.utils.word_split_util import split_word_chars
+
+    try:
+        await get_or_create_tts_audio(
+            db,
+            text=word,
+            biz_type=tts_biz.BIZ_WORD_MATCH_WORD,
+            biz_id=question_id,
+            pinyin_text=pinyin,
+            operator_id=operator_id,
+        )
+    except Exception as e:
+        logger.warning("词语整词 TTS 失败 qid=%s: %s", question_id, e)
+
+    for ch in split_word_chars(word):
+        try:
+            await get_or_create_tts_audio(
+                db,
+                text=ch,
+                biz_type=tts_biz.BIZ_PINYIN_WORD_HANZI,
+                biz_id=None,
+                operator_id=operator_id,
+            )
+        except Exception as e:
+            logger.warning("词语单字 TTS 失败 qid=%s char=%s: %s", question_id, ch, e)
+
+
+async def run_tts_background_for_word_questions(
+    question_ids: List[int],
+    operator_id: int | None = None,
+) -> None:
+    """后台任务：为词语连连看题目生成 TTS。"""
+    if not question_ids:
+        return
+    db = SessionLocal()
+    try:
+        from app.models.word_question import WordQuestion
+
+        rows = (
+            db.query(WordQuestion)
+            .filter(WordQuestion.id.in_(question_ids), WordQuestion.is_deleted == 0)
+            .all()
+        )
+        for q in rows:
+            await generate_tts_for_word_question(db, q.id, q.word, q.pinyin, operator_id)
+    finally:
+        db.close()
+
+
+def run_tts_background_for_word_questions_sync(
+    question_ids: List[int],
+    operator_id: int | None = None,
+) -> None:
+    """同步包装：供 FastAPI BackgroundTasks 可靠触发 asyncio TTS 任务。"""
+    import asyncio
+
+    asyncio.run(run_tts_background_for_word_questions(question_ids, operator_id))
+
+
 def lookup_question_audio_map(
     db: Session, question_ids: List[int], voice_name: str | None = None
 ) -> Dict[int, Dict[str, Optional[str]]]:

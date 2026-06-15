@@ -9,7 +9,8 @@
 `user_id` + `content_type` + `content_id` + `scope_type` + `scope_id`
 
 - 拼音配对：`content_type=pinyin_pair`，`content_id=practice_questions.id`，`scope_type=book`，`scope_id=练习册 id`
-- 后续词语/成语：新增 `ContentType` 与 `providers/` 即可
+- 词语连连看：`content_type=word_choice`，`content_id=word_questions.id`，`scope_type=book`，`scope_id=词库 id`
+- 后续成语：新增 `ContentType` 与 `providers/` 即可
 
 ## 权重规则（见 `app/learning/config.py`）
 
@@ -30,14 +31,20 @@
 
 | 能力 | 位置 |
 |------|------|
-| 加权抽题 | `LearningMasteryService.pick_pinyin_book_questions` |
-| 记录作答 | `LearningMasteryService.record_pinyin_attempt` |
+| 加权抽题 | `pick_pinyin_book_questions` / `pick_word_book_questions` |
+| 记录作答 | `record_pinyin_attempt` / `record_word_attempt` |
 | 纯逻辑 | `mastery_engine.py`、`sampler.py` |
 
-练习流程接入：
+拼音练练看：
 
 - `GET /web/books/{id}/game` → `build_game_data(..., user_id)`
 - `POST /web/practice/submit` → 每题调用 `record_pinyin_attempt`（仍同步写错题本）
+
+词语连连看：
+
+- `GET /web/word-books/{id}/game` → `build_word_match_game(..., user_id)`
+- `POST /web/word-match/submit` → 每题调用 `record_word_attempt`
+- `POST /web/word-match/wrong-attempt` → 连字顺序错误时 `record_word_attempt(false)` + 错题本
 
 ## 已有库迁移
 

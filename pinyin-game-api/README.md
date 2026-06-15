@@ -18,10 +18,13 @@ cp .env.example .env
 # 务必在 .env 中配置数据库（会覆盖 config.py 里的默认值）
 python -m app.scripts.init_admin
 python -m app.scripts.seed_demo_data
-uvicorn app.main:app --reload --port 8000
+
+ 
+PS D:\project\pinyin_study\pinyin-game-api> .\venv\Scripts\Activate.ps1  命令行虚拟环境
+uvicorn app.main:app --reload --port 8066
 ```
 
-API 文档：http://127.0.0.1:8000/docs
+API 文档：http://127.0.0.1:8066/docs
 
 ## 脚本
 
@@ -74,7 +77,7 @@ python -m app.scripts.sync_pinyin_questions
 
 接口前缀：`/api/game/pinyin-select`（见 [docs/api_spec.md](../docs/api_spec.md)）。
 
-**排查**：前台点击声母/韵母顶部出现 `Not Found`，多为本机 `uvicorn` 未加载新路由。请用 `uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` 重启；可访问 `http://127.0.0.1:8000/docs` 确认是否存在 `GET /api/game/pinyin-select/part-audio`。
+**排查**：前台点击声母/韵母顶部出现 `Not Found`，多为本机 `uvicorn` 未加载新路由。请用 `uvicorn app.main:app --reload --host 0.0.0.0 --port 8066` 重启；可访问 `http://127.0.0.1:8066/docs` 确认是否存在 `GET /api/game/pinyin-select/part-audio`。
 
 声母/韵母朗读优先使用 [hanyupinyin.cn](http://www.hanyupinyin.cn/) 标准 mp3（抓取脚本见下），无本地文件时用汉语认读字 TTS（`app/utils/pinyin_part_tts_util.py`）。
 
@@ -83,6 +86,14 @@ python -m app.scripts.scrape_hanyupinyin_cn --download
 ```
 
 会写入 `data/hanyupinyin_cn/pinyin_parts.json`，并将 mp3 同步到 `pinyin-game-web/public/sounds/pinyin-parts/`。
+
+### 词语连连看
+
+迁移：`sql/migrate_word_link_game.sql`。演示词库：`python -m app.scripts.seed_word_link_demo`。
+
+接口前缀：`/api/web/word-books`、`/api/web/word-match`；管理端 `/api/admin/word-books`。
+
+TTS 业务类型：`word_match_word`（整词朗读）。
 
 ### TTS 语音（edge-tts + MinIO）
 

@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "mysql+pymysql://pinyin_game:pinyin_game_nys@127.0.0.1:3306/pinyin_game?charset=utf8mb4"
     REDIS_URL: str = "redis://:redis123@127.0.0.1:6379/0"
-    JWT_SECRET: str = "dev-secret-change-in-production"
+    JWT_SECRET: str = "dev-secret-change-in-production-32b"
     JWT_EXPIRE_DAYS: int = 7
     SINGLE_LOGIN: bool = False
     CORS_ORIGINS: str = "*"

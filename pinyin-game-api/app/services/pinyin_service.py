@@ -105,3 +105,17 @@ def hanzi_to_pinyin(hanzi: str, max_variants: int = MAX_PINYIN_VARIANTS) -> Piny
         pinyin_list=tone_list,
         pinyin_plain_list=plain_list,
     )
+
+
+def hanzi_to_char_pinyin_list(text: str) -> List[str]:
+    """
+    逐字返回带声调拼音，与 text 中汉字顺序一一对应。
+    用于词语连连看单字卡片展示。
+    """
+    result: List[str] = []
+    for c in (text or ""):
+        if not is_hanzi(c):
+            continue
+        rows = pinyin(c, style=Style.TONE, heteronym=False, errors=lambda x: [""])  # type: ignore[arg-type]
+        result.append(rows[0][0] if rows and rows[0] else "")
+    return result

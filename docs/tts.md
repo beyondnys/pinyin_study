@@ -50,6 +50,8 @@ python -m app.scripts.backfill_tts_audio --scope all --limit 500
 
 - `practice_question_hanzi` / `practice_question_pinyin`
 - `pinyin_word_hanzi` / `pinyin_word_pinyin`
+- `word_match_word`（词语连连看整词）
+- 词语导入/重试 TTS 时还会为每个单字生成 `pinyin_word_hanzi`（游戏格子小喇叭用）
 
 ## 常见错误
 

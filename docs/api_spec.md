@@ -39,6 +39,11 @@
 | GET | /web/practice/records/{id} | 练习结果 |
 | GET | /web/wrong-questions | 错题本 |
 | POST | /web/wrong-questions/attempt | 配对选错时记入错题（即时，无需提交练习） |
+| GET | /web/word-books | 词语词库列表 |
+| GET | /web/word-books/{id}/game | 词语连连看：单字卡片，Query: count=6（总卡数≤16） |
+| POST | /web/word-match/submit | 词语连连看提交 |
+| POST | /web/word-match/wrong-attempt | 连字顺序错误时记错题 |
+| GET | /web/word-match/records/{id} | 词语连连看结果 |
 
 ### 游戏 /game/pinyin-select（拼音练习游戏，登录可选）
 
@@ -57,9 +62,15 @@
 | CRUD | /admin/users | 用户 |
 | CRUD | /admin/words | 字库 |
 | CRUD | /admin/books | 练习册 |
+| CRUD | /admin/word-books | 词语词库 |
+| CRUD | /admin/word-books/{book_id}/questions | 词语题目 |
+| POST | /admin/word-books/{book_id}/questions/batch-import | 词语批量导入（每行一词，2～4 字；单次事务；整词+单字 TTS 后台异步） |
+| POST | /admin/word-books/{book_id}/retry-word-tts | 为词库全部词语重新生成读音（整词 + 单字，后台异步；推荐） |
+| POST | /admin/word-books/{book_id}/questions/retry-tts | 同上（兼容旧路径） |
 | CRUD | /admin/books/{book_id}/questions | 题目 |
 | POST | /admin/books/{book_id}/questions/batch-import | 练习册题目批量文本导入 |
 | POST | /admin/import-tasks | 文本导入 |
 | GET | /admin/import-tasks | 导入任务列表 |
-| GET | /admin/practice-records | 学习记录 |
+| GET | /admin/practice-records | 拼音练习学习记录 |
+| GET | /admin/word-match-records | 词语连连看学习记录 |
 | GET | /admin/wrong-questions | 错题查询 |

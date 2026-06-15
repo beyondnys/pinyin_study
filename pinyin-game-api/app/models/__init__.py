@@ -12,6 +12,10 @@ from app.models.user_item_mastery import UserItemMastery
 from app.models.import_task import ImportTask
 from app.models.pinyin_question import PinyinQuestion
 from app.models.pinyin_game_record import PinyinGameRecord
+from app.models.word_book import WordBook
+from app.models.word_question import WordQuestion
+from app.models.word_match_record import WordMatchRecord
+from app.models.word_match_answer_detail import WordMatchAnswerDetail
 
 __all__ = [
     "User",
@@ -25,4 +29,8 @@ __all__ = [
     "ImportTask",
     "PinyinQuestion",
     "PinyinGameRecord",
+    "WordBook",
+    "WordQuestion",
+    "WordMatchRecord",
+    "WordMatchAnswerDetail",
 ]

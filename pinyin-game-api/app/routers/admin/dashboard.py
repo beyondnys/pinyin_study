@@ -10,6 +10,8 @@ from app.models.practice_book import PracticeBook
 from app.models.practice_record import PracticeRecord
 from app.models.user import User
 from app.models.word_library import WordLibrary
+from app.models.word_book import WordBook
+from app.models.word_match_record import WordMatchRecord
 from app.models.wrong_question import WrongQuestion
 from app.response import success
 
@@ -23,7 +25,9 @@ def stats(db: Session = Depends(get_db)):
         "user_count": db.query(User).filter(User.is_deleted == 0).count(),
         "word_count": db.query(WordLibrary).filter(WordLibrary.is_deleted == 0).count(),
         "book_count": db.query(PracticeBook).filter(PracticeBook.is_deleted == 0).count(),
+        "word_book_count": db.query(WordBook).filter(WordBook.is_deleted == 0).count(),
         "record_count": db.query(PracticeRecord).filter(PracticeRecord.is_deleted == 0).count(),
+        "word_match_record_count": db.query(WordMatchRecord).filter(WordMatchRecord.is_deleted == 0).count(),
         "wrong_count": db.query(WrongQuestion).filter(WrongQuestion.is_deleted == 0).count(),
     }
     return success(data)

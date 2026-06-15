@@ -5,10 +5,34 @@
       <el-menu :default-active="route.path" router>
         <el-menu-item index="/dashboard"><el-icon><Odometer /></el-icon>仪表盘</el-menu-item>
         <el-menu-item index="/users"><el-icon><User /></el-icon>用户</el-menu-item>
-        <el-menu-item index="/words"><el-icon><Notebook /></el-icon>字库</el-menu-item>
-        <el-menu-item index="/books"><el-icon><Collection /></el-icon>练习册</el-menu-item>
-        <el-menu-item index="/import-tasks"><el-icon><Upload /></el-icon>文本导入</el-menu-item>
-        <el-menu-item index="/practice-records"><el-icon><Document /></el-icon>学习记录</el-menu-item>
+
+        <el-sub-menu index="pinyin-group">
+          <template #title>
+            <el-icon><Collection /></el-icon>
+            <span>拼音练习</span>
+          </template>
+          <el-menu-item index="/words">字库</el-menu-item>
+          <el-menu-item index="/books">练习册</el-menu-item>
+          <el-menu-item index="/import-tasks">文本导入</el-menu-item>
+        </el-sub-menu>
+
+        <el-sub-menu index="word-group">
+          <template #title>
+            <el-icon><Connection /></el-icon>
+            <span>词语连连看</span>
+          </template>
+          <el-menu-item index="/word-books">词语词库</el-menu-item>
+        </el-sub-menu>
+
+        <el-sub-menu index="records-group">
+          <template #title>
+            <el-icon><Document /></el-icon>
+            <span>学习记录</span>
+          </template>
+          <el-menu-item index="/practice-records">拼音练习</el-menu-item>
+          <el-menu-item index="/word-match-records">词语连连看</el-menu-item>
+        </el-sub-menu>
+
         <el-menu-item index="/wrong-questions"><el-icon><Warning /></el-icon>错题</el-menu-item>
       </el-menu>
     </el-aside>

@@ -29,8 +29,9 @@ export const GAME_LIST: GameItem[] = [
   {
     id: 'word-link',
     title: '词语连连看',
-    desc: '词语与释义配对',
-    status: 'dev',
+    desc: '按顺序连字成词',
+    status: 'ready',
+    route: '/word-books',
   },
   {
     id: 'idiom-link',

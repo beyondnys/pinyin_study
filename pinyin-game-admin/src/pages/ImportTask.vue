@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="10">
-      <el-card header="文本导入">
+      <el-card header="拼音文本导入">
         <el-form :model="form" label-width="100px">
           <el-form-item label="任务名称"><el-input v-model="form.title" /></el-form-item>
           <el-form-item label="练习册名"><el-input v-model="form.book_title" placeholder="新建练习册标题" /></el-form-item>

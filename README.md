@@ -33,7 +33,7 @@ pip install -r requirements.txt
 cp .env.example .env   # 修改数据库与 Redis 连接
 python -m app.scripts.init_admin
 python -m app.scripts.seed_demo_data
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8066
 ```
 
 默认管理员：`admin` / `admin123`  
