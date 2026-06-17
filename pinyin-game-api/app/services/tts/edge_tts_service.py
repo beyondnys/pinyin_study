@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import os
+from typing import Optional
 
 import edge_tts
 
@@ -20,16 +22,42 @@ class EdgeTTSService(BaseTTSService):
         if voice_name not in allowed:
             raise ValueError(f"不支持的音色: {voice_name}")
 
-        communicate = edge_tts.Communicate(text=text.strip(), voice=voice_name)
+        def _build_communicate() -> edge_tts.Communicate:
+            kwargs = {
+                "text": text.strip(),
+                "voice": voice_name,
+                "connect_timeout": settings.TTS_CONNECT_TIMEOUT_SECONDS,
+                "receive_timeout": settings.TTS_RECEIVE_TIMEOUT_SECONDS,
+            }
+            try:
+                return edge_tts.Communicate(**kwargs)
+            except TypeError:
+                kwargs.pop("connect_timeout", None)
+                kwargs.pop("receive_timeout", None)
+                return edge_tts.Communicate(**kwargs)
 
-        async def _run() -> None:
+        async def _run(communicate: edge_tts.Communicate) -> None:
             await communicate.save(output_path)
 
-        try:
-            await asyncio.wait_for(_run(), timeout=settings.TTS_TIMEOUT_SECONDS)
-        except asyncio.TimeoutError as e:
-            raise TimeoutError(f"TTS 生成超时（{settings.TTS_TIMEOUT_SECONDS}s）") from e
-        except Exception as e:
-            raise RuntimeError(f"edge-tts 生成失败: {e}") from e
+        attempts = max(1, settings.TTS_RETRY_ATTEMPTS)
+        last_error: Optional[Exception] = None
+        for attempt in range(1, attempts + 1):
+            try:
+                communicate = _build_communicate()
+                await asyncio.wait_for(_run(communicate), timeout=settings.TTS_TIMEOUT_SECONDS)
+                return output_path
+            except asyncio.TimeoutError as e:
+                last_error = TimeoutError(f"TTS 生成超时（{settings.TTS_TIMEOUT_SECONDS}s）")
+            except Exception as e:
+                last_error = RuntimeError(f"edge-tts 生成失败: {e}")
 
-        return output_path
+            try:
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+            except OSError:
+                pass
+
+            if attempt < attempts:
+                await asyncio.sleep(settings.TTS_RETRY_DELAY_SECONDS)
+
+        raise last_error or RuntimeError("edge-tts 生成失败")

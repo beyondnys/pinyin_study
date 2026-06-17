@@ -255,9 +255,9 @@ def create_word_question(
     db: Session,
     book_id: int,
     word: str,
-    meaning: str | None = None,
+    meaning: Optional[str] = None,
     sort_order: int = 0,
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
     *,
     commit: bool = True,
 ) -> WordQuestion:
@@ -290,7 +290,7 @@ def batch_import_word_questions(
     db: Session,
     book_id: int,
     raw_text: str,
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> dict:
     """
     批量导入词语到指定词库（单次事务，避免逐条 commit 导致超时）。

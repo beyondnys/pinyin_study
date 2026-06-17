@@ -19,6 +19,7 @@ const router = createRouter({
         { path: 'word-books', name: 'WordBooks', component: () => import('@/pages/WordBookList.vue') },
         { path: 'word-match/:bookId', name: 'WordMatch', component: () => import('@/pages/WordMatchGame.vue') },
         { path: 'word-result/:recordId', name: 'WordResult', component: () => import('@/pages/WordMatchResult.vue') },
+        { path: 'game24', name: 'Game24', component: () => import('@/pages/Game24.vue') },
         { path: 'books', name: 'Books', component: () => import('@/pages/BookList.vue') },
         { path: 'practice/:bookId', name: 'Practice', component: () => import('@/pages/PracticeGame.vue') },
         { path: 'result/:recordId', name: 'Result', component: () => import('@/pages/PracticeResult.vue') },

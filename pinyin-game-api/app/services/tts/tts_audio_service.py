@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
 import tempfile
@@ -31,7 +32,7 @@ def _get_tts_engine():
     raise ValueError(f"不支持的 TTS_PROVIDER: {settings.TTS_PROVIDER}")
 
 
-def _resolve_voice(voice_name: str | None) -> str:
+def _resolve_voice(voice_name: Optional[str]) -> str:
     v = (voice_name or settings.TTS_DEFAULT_VOICE).strip()
     allowed = {x.strip() for x in settings.TTS_ALLOWED_VOICES.split(",") if x.strip()}
     if v not in allowed:
@@ -39,14 +40,20 @@ def _resolve_voice(voice_name: str | None) -> str:
     return v
 
 
+async def _sleep_between_tts_items() -> None:
+    delay = max(0.0, settings.TTS_BATCH_DELAY_SECONDS)
+    if delay:
+        await asyncio.sleep(delay)
+
+
 async def get_or_create_tts_audio(
     db: Session,
     text: str,
-    voice_name: str | None = None,
-    biz_type: str | None = None,
-    biz_id: int | None = None,
-    pinyin_text: str | None = None,
-    operator_id: int | None = None,
+    voice_name: Optional[str] = None,
+    biz_type: Optional[str] = None,
+    biz_id: Optional[int] = None,
+    pinyin_text: Optional[str] = None,
+    operator_id: Optional[int] = None,
 ) -> TtsAudioResource:
     """
     获取或创建 TTS 资源：已成功则直接返回；否则生成并上传 MinIO。
@@ -136,7 +143,7 @@ async def get_or_create_tts_audio(
                 pass
 
 
-async def retry_tts_audio(db: Session, resource_id: int, operator_id: int | None = None) -> TtsAudioResource:
+async def retry_tts_audio(db: Session, resource_id: int, operator_id: Optional[int] = None) -> TtsAudioResource:
     """按资源 ID 重试生成。"""
     row = db.query(TtsAudioResource).filter(
         TtsAudioResource.id == resource_id,
@@ -157,7 +164,7 @@ async def retry_tts_audio(db: Session, resource_id: int, operator_id: int | None
     )
 
 
-def get_presigned_url_for_resource(row: TtsAudioResource | None) -> Optional[str]:
+def get_presigned_url_for_resource(row: Optional[TtsAudioResource]) -> Optional[str]:
     """成功记录返回新鲜预签名 URL。"""
     if not row or row.generate_status != tts_biz.GENERATE_SUCCESS:
         return None
@@ -173,7 +180,7 @@ def get_presigned_url_for_resource(row: TtsAudioResource | None) -> Optional[str
 def lookup_audio_urls(
     db: Session,
     pairs: List[Tuple[str, int]],
-    voice_name: str | None = None,
+    voice_name: Optional[str] = None,
 ) -> Dict[Tuple[str, int], Dict[str, Optional[str]]]:
     """
   批量查询 biz 对应音频 URL。
@@ -222,7 +229,7 @@ def lookup_audio_urls(
 
 
 def lookup_word_audio_map(
-    db: Session, word_ids: List[int], voice_name: str | None = None
+    db: Session, word_ids: List[int], voice_name: Optional[str] = None
 ) -> Dict[int, Dict[str, Optional[str]]]:
     """字库 ID -> {hanzi, pinyin} 预签名 URL。"""
     if not word_ids:
@@ -252,7 +259,7 @@ def lookup_word_audio_map(
 
 
 def get_audio_urls_by_texts(
-    db: Session, texts: List[str], voice_name: str | None = None
+    db: Session, texts: List[str], voice_name: Optional[str] = None
 ) -> Dict[str, Optional[str]]:
     """按文本内容批量查预签名 URL（用于错题等无 biz_id 场景）。"""
     normalized_list = [normalize_text(t) for t in texts if normalize_text(t)]
@@ -279,7 +286,7 @@ def get_audio_urls_by_texts(
 
 
 def lookup_word_match_audio_map(
-    db: Session, question_ids: List[int], voice_name: str | None = None
+    db: Session, question_ids: List[int], voice_name: Optional[str] = None
 ) -> Dict[int, Optional[str]]:
     """词语连连看题目 ID -> 整词 TTS URL。"""
     if not question_ids:
@@ -308,7 +315,7 @@ async def generate_tts_for_word_question(
     question_id: int,
     word: str,
     pinyin: str,
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """为词语连连看题目生成整词 TTS + 各单字 TTS（游戏格子朗读用）。"""
     from app.utils.word_split_util import split_word_chars
@@ -340,7 +347,7 @@ async def generate_tts_for_word_question(
 
 async def run_tts_background_for_word_questions(
     question_ids: List[int],
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """后台任务：为词语连连看题目生成 TTS。"""
     if not question_ids:
@@ -356,13 +363,14 @@ async def run_tts_background_for_word_questions(
         )
         for q in rows:
             await generate_tts_for_word_question(db, q.id, q.word, q.pinyin, operator_id)
+            await _sleep_between_tts_items()
     finally:
         db.close()
 
 
 def run_tts_background_for_word_questions_sync(
     question_ids: List[int],
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """同步包装：供 FastAPI BackgroundTasks 可靠触发 asyncio TTS 任务。"""
     import asyncio
@@ -371,7 +379,7 @@ def run_tts_background_for_word_questions_sync(
 
 
 def lookup_question_audio_map(
-    db: Session, question_ids: List[int], voice_name: str | None = None
+    db: Session, question_ids: List[int], voice_name: Optional[str] = None
 ) -> Dict[int, Dict[str, Optional[str]]]:
     """题目 ID -> {hanzi_audio_url, pinyin_audio_url}"""
     if not question_ids:
@@ -405,7 +413,7 @@ async def generate_tts_for_question(
     question_id: int,
     hanzi: str,
     pinyin: str,
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """为题目生成汉字+拼音两条 TTS（失败不抛出）。"""
     try:
@@ -438,7 +446,7 @@ async def generate_tts_for_word(
     word_id: int,
     hanzi: str,
     pinyin: str,
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """为字库生成汉字+拼音 TTS。"""
     try:
@@ -468,7 +476,7 @@ async def generate_tts_for_word(
 
 async def run_tts_background_for_questions(
     question_ids: List[int],
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """后台任务：为多个题目生成 TTS。"""
     if not question_ids:
@@ -484,13 +492,14 @@ async def run_tts_background_for_questions(
         )
         for q in rows:
             await generate_tts_for_question(db, q.id, q.hanzi, q.pinyin, operator_id)
+            await _sleep_between_tts_items()
     finally:
         db.close()
 
 
 async def run_tts_background_for_words(
     word_ids: List[int],
-    operator_id: int | None = None,
+    operator_id: Optional[int] = None,
 ) -> None:
     """后台任务：为字库条目生成 TTS。"""
     if not word_ids:
@@ -506,5 +515,6 @@ async def run_tts_background_for_words(
         )
         for w in rows:
             await generate_tts_for_word(db, w.id, w.hanzi, w.pinyin, operator_id)
+            await _sleep_between_tts_items()
     finally:
         db.close()

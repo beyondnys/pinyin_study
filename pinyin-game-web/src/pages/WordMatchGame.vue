@@ -56,7 +56,7 @@ import WordCharCard from '@/components/WordCharCard.vue'
 import { useWordMatchStore } from '@/stores/wordMatchGame'
 import { fireConfetti } from '@/utils/confetti'
 import { playMatchSuccess, playSound, preloadSounds } from '@/utils/sound'
-import { isValidWordChainPick } from '@/utils/wordMatchUtil'
+import { isValidWordChainAnswer } from '@/utils/wordMatchUtil'
 import { playTtsAudio } from '@/utils/ttsAudio'
 
 const MATCH_ANIM_MS = 380
@@ -166,18 +166,20 @@ function onCardClick(card: WordCharCardItem) {
   playSound('select')
 
   const chain = activeChain.value
-  const meta = wordMatchStore.getWordMeta(card.question_id)
+  const activeQuestionId = chain[0]?.question_id ?? card.question_id
+  const meta = wordMatchStore.getWordMeta(activeQuestionId)
   const word = meta?.word ?? ''
 
   if (!word) return
 
-  if (!isValidWordChainPick(word, chain, card)) {
-    if (chain.length) {
-      flashWrong(chain.concat(card))
-      void saveWrongAttempt(chain[0].question_id)
-    } else {
-      flashWrong([card])
-    }
+  if (chain.some((c) => c.card_id === card.card_id)) {
+    flashWrong([card])
+    return
+  }
+
+  if (chain.length >= word.length) {
+    flashWrong(chain.concat(card))
+    void saveWrongAttempt(chain[0]?.question_id ?? card.question_id)
     clearChainVisual()
     return
   }
@@ -188,7 +190,13 @@ function onCardClick(card: WordCharCardItem) {
 
   const headQid = nextChain[0].question_id
   if (nextChain.length >= word.length) {
-    completeWord(headQid, nextChain)
+    if (isValidWordChainAnswer(word, nextChain)) {
+      completeWord(headQid, nextChain)
+    } else {
+      flashWrong(nextChain)
+      void saveWrongAttempt(headQid)
+      clearChainVisual()
+    }
   }
 }
 

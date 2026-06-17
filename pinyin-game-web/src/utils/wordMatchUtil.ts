@@ -34,3 +34,8 @@ export function isValidWordChainPick(
   if (chain.length === 0) return true
   return chain[0].question_id === card.question_id
 }
+
+export function isValidWordChainAnswer(word: string, chain: ChainCardLike[]): boolean {
+  if (!word || chain.length !== word.length) return false
+  return chain.map((c) => c.text).join('') === word
+}

@@ -30,7 +30,7 @@ const route = useRoute()
 const auth = useAuthStore()
 
 /** 拼音练习等子游戏页：顶栏「退出」前显示返回大厅 */
-const showLobbyBack = computed(() => route.path === '/pinyin-select')
+const showLobbyBack = computed(() => route.path === '/pinyin-select' || route.path === '/game24')
 
 async function onLogout() {
   await auth.logout()

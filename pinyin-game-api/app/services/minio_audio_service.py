@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime, timedelta
 from functools import lru_cache
+from typing import Optional
 from urllib.parse import urlparse
 
 from minio import Minio
@@ -117,7 +118,7 @@ def upload_audio_file(
     return object_name
 
 
-def get_presigned_audio_url(object_name: str, bucket: str | None = None) -> str:
+def get_presigned_audio_url(object_name: str, bucket: Optional[str] = None) -> str:
     """生成预签名 GET URL（公网访问）。"""
     client = _client()
     bkt = bucket or settings.MINIO_BUCKET

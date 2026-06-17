@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 from sqlalchemy import BigInteger, Integer, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -42,7 +44,7 @@ class WordQuestion(Base, AuditMixin):
         nullable=False,
         comment="字数 2～4",
     )
-    meaning: Mapped[str | None] = mapped_column(
+    meaning: Mapped[Optional[str]] = mapped_column(
         String(256),
         nullable=True,
         comment="释义，预留对接外部 API",

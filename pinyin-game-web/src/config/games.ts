@@ -43,6 +43,7 @@ export const GAME_LIST: GameItem[] = [
     id: 'game24',
     title: '24点游戏',
     desc: '四则运算凑 24',
-    status: 'dev',
+    status: 'ready',
+    route: '/game24',
   },
 ]

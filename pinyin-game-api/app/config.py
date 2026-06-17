@@ -31,7 +31,12 @@ class Settings(BaseSettings):
     TTS_PROVIDER: str = "edge"
     TTS_DEFAULT_VOICE: str = "zh-CN-XiaoxiaoNeural"
     TTS_MAX_TEXT_LEN: int = 200
-    TTS_TIMEOUT_SECONDS: int = 60
+    TTS_TIMEOUT_SECONDS: int = 180
+    TTS_CONNECT_TIMEOUT_SECONDS: int = 30
+    TTS_RECEIVE_TIMEOUT_SECONDS: int = 120
+    TTS_RETRY_ATTEMPTS: int = 3
+    TTS_RETRY_DELAY_SECONDS: float = 2.0
+    TTS_BATCH_DELAY_SECONDS: float = 0.2
     TTS_ALLOWED_VOICES: str = (
         "zh-CN-XiaoxiaoNeural,zh-CN-YunxiNeural,zh-CN-YunjianNeural,zh-CN-XiaoyiNeural"
     )

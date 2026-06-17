@@ -1,4 +1,4 @@
-# 需要 Python 3.10+（推荐 3.11/3.12）。若使用 3.9，已启用 postponed annotations 兼容。
+# 支持 Python 3.9+（生产若只能使用 3.9，请避免使用 PEP 604 的 X | None 类型写法）。
 fastapi>=0.110.0
 uvicorn[standard]>=0.27.0
 sqlalchemy>=2.0.0
